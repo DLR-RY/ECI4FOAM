@@ -1,0 +1,14 @@
+#!/bin/bash
+cd "${0%/*}" || exit                                # Run from this directory
+
+
+source ../../scripts/pyInstall.sh
+
+pyincludes > Make/options.template
+echo -e "\n" >> Make/options.template
+pylibs -rpath >> Make/options.template
+echo -e "\n" >> Make/options.template
+cat Make/options.temp >> Make/options.template
+
+conan install . -s compiler=gcc -s compiler.libcxx=libstdc++11 --build
+wmake libso

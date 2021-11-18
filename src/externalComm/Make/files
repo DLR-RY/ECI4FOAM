@@ -1,0 +1,30 @@
+dataInterface/commDataLayer.C
+dataInterface/registeredObject.C
+
+externalIO/externalIOObject.C
+externalIO/externalIOObjectList.C
+
+inputBC = externalIO/input/BC
+$(inputBC)/coupledUniformExternalValue/coupledUniformExternalValueFvPatchFields.C
+$(inputBC)/coupledWallHeatFluxTemperature/coupledWallHeatFluxTemperatureFvPatchScalarField.C
+
+$(inputBC)/coupledFlowRateInletVelocity/coupledFlowRateInletVelocityFvPatchVectorField.C
+$(inputBC)/coupledFlowRateOutletVelocity/coupledFlowRateOutletVelocityFvPatchVectorField.C
+
+meshMotion = externalIO/input/meshMotion
+$(meshMotion)/coupledTranslationMotion/coupledTranslationMotion.C
+$(meshMotion)/externalCoupledForce/externalCoupledForce.C
+
+output = externalIO/output
+
+$(output)/extForces/extForces.C
+$(output)/extSensor/extSensor.C
+$(output)/extFunction/extFunction.C
+$(output)/extPatch/extPatch.C
+
+
+networkInterface/socket.C
+networkInterface/zmq_socket.C
+networkInterface/FMU/FMUController.C
+
+LIB = $(FOAM_USER_LIBBIN)/libexternalComm

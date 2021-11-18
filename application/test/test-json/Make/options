@@ -1,0 +1,6 @@
+EXE_INC = \
+    -I../../../src/externalComm/lnInclude \
+
+EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -lexternalComm
