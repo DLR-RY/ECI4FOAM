@@ -2,9 +2,8 @@
 
 
 ./src/externalComm/Allwmake
-./src/pyFMUSim/Allwmake
+./src/embeddingPython/Allwmake
 
 wmake application/test/test-dataLayer
 wmake application/test/test-json
-#./application/test/test-pyFMU/Allwmake
-#wmake application/solver/solidFoamAdjustTime/
+

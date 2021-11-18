@@ -7,8 +7,4 @@ class fmu4foam(ConanFile):
     generators = "OpenFOAMGen"
 
     def imports(self):
-        
         self.copy("*.hpp", "lnInclude", "include")
-        # self.copy("*.lib", os.path.join('..','..','resources','binaries','win64'), "lib")
-        # self.copy("*.a", os.path.join('..','..','resources','binaries','linux64'), "lib")
-        # self.copy("*.so", os.path.join('..','..','resources','binaries','linux64'), "lib")

@@ -1,5 +1,7 @@
 #!/bin/sh
 cd "${0%/*}" || exit                                # Run from this directory
 
+wmakeLnIncludeAll 
 conan install . -s compiler=gcc -s compiler.libcxx=libstdc++11 --build
+
 wmake libso
