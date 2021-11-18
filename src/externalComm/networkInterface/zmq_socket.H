@@ -72,8 +72,8 @@ public:
         const dictionary& dict
     );
 
-    
-    ~zmq_socket();
+    //- Destructor
+    virtual ~zmq_socket();
 
     word read();
 

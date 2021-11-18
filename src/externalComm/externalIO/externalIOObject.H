@@ -136,8 +136,8 @@ public:
         );
 
 
-    //- Destructor
-    virtual ~externalIOObject() = default;
+        //- Destructor
+        virtual ~externalIOObject() = default;
 
 
     // Member Functions
@@ -178,37 +178,6 @@ public:
         //  The base implementation is a no-op.
         virtual void movePoints(const polyMesh& mesh);
 };
-
-
-// /*---------------------------------------------------------------------------*\
-//           Class externalIOObject::unavailableexternalIOObject Declaration
-// \*---------------------------------------------------------------------------*/
-
-// //- Abstract externalIOObject to report when a real version is unavailable.
-// class externalIOObject::unavailableexternalIOObject
-// :
-//     public externalIOObject
-// {
-// protected:
-
-//     //- Construct with name
-//     unavailableexternalIOObject(const word& name);
-
-//     //- Report it is unavailable, emitting a FatalError for try/catch
-//     //- in the caller
-//     void carp(std::string message = "") const;
-
-
-// public:
-
-//     // Member Functions
-
-//         //- No nothing
-//         virtual bool execute();
-
-//         //- No nothing
-//         virtual bool write();
-// };
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

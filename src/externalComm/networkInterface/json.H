@@ -69,8 +69,4 @@ namespace Foam
         j[s.name()] = {sref.x(),sref.y(),sref.z()};
     }
 
-
-
-
-
 }

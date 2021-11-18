@@ -76,8 +76,8 @@ public:
         const dictionary& dict
     );
 
-    
-    ~socket();
+    //- Destructor
+    virtual ~socket();
 
     word read();
 

@@ -14,6 +14,16 @@ function pyincludes {
     echo -e $includes
 }
 
+function copyPythonIncs {
+    incs=$(python3-config --includes)
+    for inc in $incs
+    do
+        inc="${inc:2}"
+        echo "${inc}"
+        cp -r "${inc}/." $1
+    done
+}
+
 function pylibs {
     flags=$(python3-config --ldflags)
     PYFLAGS="PY_LIBS := \ \n"

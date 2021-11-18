@@ -13,8 +13,7 @@ PY_LIBS := \
 
 CONAN_INCS := \
    -I/home/henning/.conan/data/pybind11/2.7.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/pybind11 \
-   -I/home/henning/.conan/data/pybind11/2.7.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include \
-   -I/home/henning/.conan/data/nlohmann_json/3.9.1/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include
+   -I/home/henning/.conan/data/pybind11/2.7.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include
 
 CONAN_LIBS := \
    -L/home/henning/.conan/data/pybind11/2.7.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/lib 
