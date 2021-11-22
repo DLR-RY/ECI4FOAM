@@ -13,6 +13,6 @@ cat Make/options.temp >> Make/options.template
 rm -r lnInclude
 wmakeLnIncludeAll 
 copyPythonIncs lnInclude/
-ls lnInclude
+
 conan install . -s compiler=gcc -s compiler.libcxx=libstdc++11 --build
 wmake libso

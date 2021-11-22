@@ -8,3 +8,4 @@ class fmu4foam(ConanFile):
 
     def imports(self):
         self.copy("*.hpp", "lnInclude", "include")
+        self.copy("*.h", "lnInclude", "include")
