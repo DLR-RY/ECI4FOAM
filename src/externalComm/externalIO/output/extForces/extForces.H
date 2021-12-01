@@ -1,116 +1,48 @@
 /*---------------------------------------------------------------------------*\
-  =========                 |
-  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | www.openfoam.com
-     \\/     M anipulation  |
--------------------------------------------------------------------------------
-    Copyright (C) 2018-2019 OpenFOAM Foundation
-    Copyright (C) 2020 OpenCFD Ltd.
+            Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of OpenFOAM.
-
+    This file is part of the VoFLibrary source code library, which is an
+	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
     Foam::externalIOObject::extForces
 
-Group
-    grpFieldFunctionObjects
-
 Description
-    Computes the natural extForcesarithm of an input \c volScalarField.
-
-    \f[
-        f = s \ln(max(f_0, a)) + t
-    \f]
-
-    where
-    \vartable
-      f     | Output volScalarField
-      f_0   | Input volScalarField
-      \ln   | Natural extForcesarithm operator
-      a     | Clip scalar
-      s     | Scaling factor
-      t     | Offset factor
-    \endvartable
-
-    \table
-      Operand       | Type           | Location
-      input         | volScalarField | $FOAM_CASE/\<time\>/\<inpField\>
-      output file   | -              | -
-      output field  | volScalarField | $FOAM_CASE/\<time\>/\<outField\>
-    \endtable
+    Computes the natural forces and makes accesible for exchange
 
 Usage
-    Minimal example by using \c system/controlDict.functions:
+    Minimal example by using \c system/externalCouplingDict:
     \verbatim
-    extForces1
+    extForces
     {
-        // Mandatory entries (unmodifiable)
-        type            extForces;
-        libs            (fieldFunctionObjects);
-
-        // Mandatory (inherited) entry (runtime modifiable)
-        field           <inpField>;
-
-        // Optional entries (runtime modifiable)
-        clip            1e-3;
-        checkDimensions false;
-        scale           1.0;
-        offset          0.0;
-
-        // Optional (inherited) entries
-        ...
+        type extForces;
+        patches (".*");
+        CofR  (0 0 0);
+        forceName force;
+        momentName moment;
     }
     \endverbatim
 
-    where the entries mean:
+        Where the entries comprise:
     \table
-      Property     | Description                        | Type | Req'd | Dflt
-      type         | Type name: extForces                     | word |  yes  | -
-      libs         | Library name: fieldFunctionObjects | word |  yes  | -
-      field        | Name of the operand field          | word |  yes  | -
-      clip         | Value to clip the operand field values <!--
-                 --> to prevent zero or negative input  | scalar | no  | SMALL
-      checkDimensions | Flag to check dimensions of the operand field <!--
-                                                    --> | bool   | no  | true
-      scale        | Scaling factor - \c s above        | scalar | no  | 1.0
-      offset       | Offset factor - \c t above         | scalar | no  | 0.0
+        Property     | Description             | Required    | Default value
+        type         | Type name: forces       | yes         |
+        patches      | Patches included in the forces calculation | yes |
+        CofR         | Centre of rotation (see below) | no   |
     \endtable
 
-    The inherited entries are elaborated in:
-     - \link functionObject.H \endlink
-     - \link fieldExpression.H \endlink
 
-    Minimal example by using the \c postProcess utility:
-    \verbatim
-        postProcess -func "extForces(<inpField>)" -scale 1.0 -offset 0.0
-    \endverbatim
-
-Note
-    - Performs \f$\ln(max(x, a))\f$ where \f$x\f$ is a \c volScalarField, and
-    \f$a\f$ a clip scalar, equals to \c SMALL by default. This prevents zero or
-    negative input \f$x\f$, hence the domain error in the natural extForcesarithm.
-    - Dimension checking can optionally be suspended if \f$x\f$ is dimensioned.
-
-See also
-    - Foam::functionObject
-    - Foam::externalIOObject::fieldExpression
-    - Foam::externalIOObject::fvMeshFunctionObject
-    - ExtendedCodeGuide::externalIOObject::field::extForces
 
 SourceFiles
     extForces.C
@@ -147,7 +79,7 @@ class extForces
 public:
 
     //- Runtime type information
-    TypeName("forces");
+    TypeName("extForces");
 
 
     // Constructors

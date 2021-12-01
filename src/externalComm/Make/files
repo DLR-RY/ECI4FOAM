@@ -15,6 +15,9 @@ meshMotion = externalIO/input/meshMotion
 $(meshMotion)/coupledTranslationMotion/coupledTranslationMotion.C
 $(meshMotion)/externalCoupledForce/externalCoupledForce.C
 
+fvOptions = externalIO/input/fvOptions
+$(fvOptions)/coupledAccelerationSource/coupledAccelerationSource.C
+
 output = externalIO/output
 
 $(output)/extForces/extForces.C
