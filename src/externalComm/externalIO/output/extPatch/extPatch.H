@@ -22,86 +22,10 @@ Group
     grpFieldFunctionObjects
 
 Description
-    Computes the natural extPatcharithm of an input \c volScalarField.
-
-    \f[
-        f = s \ln(max(f_0, a)) + t
-    \f]
-
-    where
-    \vartable
-      f     | Output volScalarField
-      f_0   | Input volScalarField
-      \ln   | Natural extPatcharithm operator
-      a     | Clip scalar
-      s     | Scaling factor
-      t     | Offset factor
-    \endvartable
-
-    \table
-      Operand       | Type           | Location
-      input         | volScalarField | $FOAM_CASE/\<time\>/\<inpField\>
-      output file   | -              | -
-      output field  | volScalarField | $FOAM_CASE/\<time\>/\<outField\>
-    \endtable
+   
 
 Usage
-    Minimal example by using \c system/externalCouplingDict:
-    \verbatim
-    extPatch1
-    {
-        // Mandatory entries (unmodifiable)
-        type            extPatch;
-        libs            (fieldFunctionObjects);
-
-        // Mandatory (inherited) entry (runtime modifiable)
-        field           <inpField>;
-
-        // Optional entries (runtime modifiable)
-        clip            1e-3;
-        checkDimensions false;
-        scale           1.0;
-        offset          0.0;
-
-        // Optional (inherited) entries
-        ...
-    }
-    \endverbatim
-
-    where the entries mean:
-    \table
-      Property     | Description                        | Type | Req'd | Dflt
-      type         | Type name: extPatch                     | word |  yes  | -
-      libs         | Library name: fieldFunctionObjects | word |  yes  | -
-      field        | Name of the operand field          | word |  yes  | -
-      clip         | Value to clip the operand field values <!--
-                 --> to prevent zero or negative input  | scalar | no  | SMALL
-      checkDimensions | Flag to check dimensions of the operand field <!--
-                                                    --> | bool   | no  | true
-      scale        | Scaling factor - \c s above        | scalar | no  | 1.0
-      offset       | Offset factor - \c t above         | scalar | no  | 0.0
-    \endtable
-
-    The inherited entries are elaborated in:
-     - \link functionObject.H \endlink
-     - \link fieldExpression.H \endlink
-
-    Minimal example by using the \c postProcess utility:
-    \verbatim
-        postProcess -func "extPatch(<inpField>)" -scale 1.0 -offset 0.0
-    \endverbatim
-
-Note
-    - Performs \f$\ln(max(x, a))\f$ where \f$x\f$ is a \c volScalarField, and
-    \f$a\f$ a clip scalar, equals to \c SMALL by default. This prevents zero or
-    negative input \f$x\f$, hence the domain error in the natural extPatcharithm.
-    - Dimension checking can optionally be suspended if \f$x\f$ is dimensioned.
-
-See also
-    - Foam::functionObject
-    - Foam::externalIOObject::fieldExpression
-    - Foam::externalIOObject::fvMeshFunctionObject
-    - ExtendedCodeGuide::externalIOObject::field::extPatch
+    
 
 SourceFiles
     extPatch.C

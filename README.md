@@ -2,6 +2,10 @@
 
 Coupling between FMUs and OpenFOAM
 
+# Documentation
+
+[Documentation](https://henningscheufler.github.io/ECI4FOAM/)
+
 ## Installation
 
 with conda:

@@ -53,6 +53,17 @@ entries:
       url: /doc_architecture.html
       output: web, pdf
 
+  - title: Input Output Functions
+    output: web, pdf
+    folderitems:
+
+    - title: Input
+      url: /doc_input.html
+      output: web, pdf
+
+    - title: Output
+      url: /doc_output.html
+      output: web, pdf
 
   - title: Release Notes
     output: web, pdf
