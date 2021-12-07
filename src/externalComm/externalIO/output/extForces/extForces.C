@@ -45,7 +45,9 @@ Foam::externalIOObject::extForces::extForces
 :
     externalIOObject(name, runTime, dict),
     forceName_(),
-    momentName_()
+    momentName_(),
+    CofRName_(),
+    CofR_()
 {
     read(dict);
 }
@@ -68,14 +70,29 @@ bool Foam::externalIOObject::extForces::read(const dictionary& dict)
     momentName_ = dict_.get<word>("momentName");
     data.storeObj(vector::zero,forceName_,commDataLayer::causality::out);
     data.storeObj(vector::zero,momentName_,commDataLayer::causality::out);
+
+    if (!dict_.found("CofRName"))
+    {
+        FatalError << "CofRName not found in dict" << abort(FatalError);
+    }
+    CofRName_ = dict_.get<word>("CofRName");
+
+    CofR_ = dict_.get<vector>("CofR");
+    data.storeObj(CofR_,CofRName_,commDataLayer::causality::in);
+
     return false;
 }
 
 bool Foam::externalIOObject::extForces::execute()
 {
     commDataLayer& data = commDataLayer::New(time_);
+
+    CofR_ = data.getObj<vector>(CofRName_,commDataLayer::causality::in);
+    dictionary forceDict = dict_;
+    forceDict.set("CofR",CofR_);
+    Info << "CofR " << CofR_ << endl;
     
-    functionObjects::forces f("forces", time_, dict_);
+    functionObjects::forces f("forces", time_, forceDict);
     f.calcForcesMoment();
 
     vector& F = data.getObj<vector>(forceName_,commDataLayer::causality::out);
