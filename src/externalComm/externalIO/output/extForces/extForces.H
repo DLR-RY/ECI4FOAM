@@ -53,6 +53,7 @@ SourceFiles
 #define externalIOObject_extForces_H
 
 #include "externalIOObject.H"
+#include "vector.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -71,9 +72,15 @@ class extForces
 {
     // Private Data
 
+
     word forceName_;
 
     word momentName_;
+
+    word CofRName_;
+    
+    vector CofR_;
+
 
 
 public:

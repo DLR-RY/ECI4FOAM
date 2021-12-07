@@ -25,26 +25,27 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::solidBodyMotionFunctions::coupledTranslationMotion
+    Foam::solidBodyMotionFunctions::coupledRotationMotion
 
 Description
-    Tabulated 6DoF motion function.
+    SolidBodyMotionFvMesh 6DoF motion function.
 
-    Obtained by interpolating tabulated data for surge (x-translation),
-    sway (y-translation), heave (z-translation), roll (rotation about x),
-    pitch (rotation about y) and yaw (rotation about z).
+    The rotation is defined by an origin and axis of rotation and an angular
+    speed.
 
 SourceFiles
-    coupledTranslationMotion.C
+    coupledRotationMotion.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef coupledTranslationMotion_H
-#define coupledTranslationMotion_H
+#ifndef coupledRotationMotion_H
+#define coupledRotationMotion_H
 
 #include "solidBodyMotionFunction.H"
 #include "primitiveFields.H"
-#include "Vector2D.H"
+#include "point.H"
+#include "Function1.H"
+#include "autoPtr.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -54,42 +55,45 @@ namespace solidBodyMotionFunctions
 {
 
 /*---------------------------------------------------------------------------*\
-                          Class coupledTranslationMotion Declaration
+                          Class coupledRotationMotion Declaration
 \*---------------------------------------------------------------------------*/
 
-class coupledTranslationMotion
+class coupledRotationMotion
 :
     public solidBodyMotionFunction
 {
-    // Private data
+    // Private Data
 
         //- postion vector
-        vector pos_;
+        vector rollPitchYaw_;
 
-        vector relative_;
+        vector CofR_;
 
         //- name ofpostion vector
-        word posName_;
+        word rollPitchYawName_;
+
+        word CofRName_;
+
 
     // Private Member Functions
 
         //- No copy construct
-        coupledTranslationMotion(const coupledTranslationMotion&) = delete;
+        coupledRotationMotion(const coupledRotationMotion&) = delete;
 
         //- No copy assignment
-        void operator=(const coupledTranslationMotion&) = delete;
+        void operator=(const coupledRotationMotion&) = delete;
 
 
 public:
 
     //- Runtime type information
-    TypeName("coupledTranslationMotion");
+    TypeName("coupledRotationMotion");
 
 
     // Constructors
 
         //- Construct from components
-        coupledTranslationMotion
+        coupledRotationMotion
         (
             const dictionary& SBMFCoeffs,
             const Time& runTime
@@ -100,7 +104,7 @@ public:
         {
             return autoPtr<solidBodyMotionFunction>
             (
-                new coupledTranslationMotion
+                new coupledRotationMotion
                 (
                     SBMFCoeffs_,
                     time_
@@ -110,7 +114,7 @@ public:
 
 
     //- Destructor
-    virtual ~coupledTranslationMotion() = default;
+    virtual ~coupledRotationMotion() = default;
 
 
     // Member Functions

@@ -11,8 +11,10 @@ $(inputBC)/coupledWallHeatFluxTemperature/coupledWallHeatFluxTemperatureFvPatchS
 $(inputBC)/coupledFlowRateInletVelocity/coupledFlowRateInletVelocityFvPatchVectorField.C
 $(inputBC)/coupledFlowRateOutletVelocity/coupledFlowRateOutletVelocityFvPatchVectorField.C
 
+
 meshMotion = externalIO/input/meshMotion
 $(meshMotion)/coupledTranslationMotion/coupledTranslationMotion.C
+$(meshMotion)/coupledRotationMotion/coupledRotationMotion.C
 $(meshMotion)/externalCoupledForce/externalCoupledForce.C
 
 fvOptions = externalIO/input/fvOptions

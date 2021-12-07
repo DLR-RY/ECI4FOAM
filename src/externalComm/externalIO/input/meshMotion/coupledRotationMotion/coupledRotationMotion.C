@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
-    Copyright (C) 2019-2020 OpenCFD Ltd.
+    Copyright (C) 2020 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -26,10 +26,9 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "coupledTranslationMotion.H"
+#include "coupledRotationMotion.H"
 #include "addToRunTimeSelectionTable.H"
 #include "commDataLayer.H"
-
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -37,11 +36,11 @@ namespace Foam
 {
 namespace solidBodyMotionFunctions
 {
-    defineTypeNameAndDebug(coupledTranslationMotion, 0);
+    defineTypeNameAndDebug(coupledRotationMotion, 0);
     addToRunTimeSelectionTable
     (
         solidBodyMotionFunction,
-        coupledTranslationMotion,
+        coupledRotationMotion,
         dictionary
     );
 }
@@ -50,17 +49,17 @@ namespace solidBodyMotionFunctions
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::solidBodyMotionFunctions::coupledTranslationMotion::coupledTranslationMotion
+Foam::solidBodyMotionFunctions::coupledRotationMotion::coupledRotationMotion
 (
     const dictionary& SBMFCoeffs,
     const Time& runTime
 )
 :
     solidBodyMotionFunction(SBMFCoeffs, runTime),
-    pos_(SBMFCoeffs.get<vector>("initPos")),
-    relative_(SBMFCoeffs.getOrDefault<vector>("relative",Zero)),
-    posName_(SBMFCoeffs.get<word>("posName"))
-
+    rollPitchYaw_(SBMFCoeffs_.get<vector>("rollPitchYaw")),
+    CofR_(SBMFCoeffs_.get<vector>("CofR")),
+    rollPitchYawName_(SBMFCoeffs_.get<word>("rollPitchYawName")),
+    CofRName_(SBMFCoeffs_.get<word>("CofRName"))
 {
     read(SBMFCoeffs);
 
@@ -68,22 +67,25 @@ Foam::solidBodyMotionFunctions::coupledTranslationMotion::coupledTranslationMoti
 }
 
 
+
+
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 Foam::septernion
-Foam::solidBodyMotionFunctions::coupledTranslationMotion::transformation() const
+Foam::solidBodyMotionFunctions::coupledRotationMotion::transformation() const
 {
     scalar t = time_.value();
 
     commDataLayer& data = commDataLayer::New(time_);
 
-    vector displacement =
-        data.getObj<vector>(posName_,commDataLayer::causality::in);
+    vector rollPitchYawName =
+        data.getObj<vector>(rollPitchYawName_,commDataLayer::causality::in);
 
-    displacement -= relative_;
-    Info << "displacement " << displacement << endl;
-    quaternion R(1);
-    septernion TR(septernion(displacement)*R);
+    vector CofR =
+        data.getObj<vector>(CofRName_,commDataLayer::causality::in);
+
+    quaternion R(quaternion::XYZ, rollPitchYawName);
+    septernion TR(septernion(-CofR)*R*septernion(CofR));
 
     DebugInFunction << "Time = " << t << " transformation: " << TR << endl;
 
@@ -91,14 +93,17 @@ Foam::solidBodyMotionFunctions::coupledTranslationMotion::transformation() const
 }
 
 
-bool Foam::solidBodyMotionFunctions::coupledTranslationMotion::read
+bool Foam::solidBodyMotionFunctions::coupledRotationMotion::read
 (
     const dictionary& SBMFCoeffs
 )
 {
+    solidBodyMotionFunction::read(SBMFCoeffs);
+
     commDataLayer& data = commDataLayer::New(time_);
 
-    data.storeObj(pos_,posName_,commDataLayer::causality::in);
+    data.storeObj(rollPitchYaw_,rollPitchYawName_,commDataLayer::causality::in);
+    data.storeObj(CofR_,CofRName_,commDataLayer::causality::in);
 
     return true;
 }
