@@ -4,7 +4,7 @@ Coupling between FMUs and OpenFOAM
 
 # Documentation
 
-[Documentation](https://henningscheufler.github.io/ECI4FOAM/)
+[Documentation](https://DLR-RY.github.io/ECI4FOAM/)
 
 ## Installation
 
