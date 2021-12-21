@@ -14,8 +14,6 @@ The design of the library and describes in couple your code
 
 To get started, see [Getting Started][index].
 
-{% include links.html %}
-
 
 ## Input and Output parameters
 

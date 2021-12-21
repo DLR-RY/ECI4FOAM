@@ -6,6 +6,15 @@ sidebar: doc_sidebar
 folder: doc
 ---
 
+## Usage
+
+add following library to the controlDict
+
+```
+libs(externalComm)
+```
+
+
 ## One Dimensional
 
 ### extForces
