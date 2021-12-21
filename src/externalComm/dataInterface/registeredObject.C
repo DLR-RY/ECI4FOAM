@@ -16,10 +16,8 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 \*---------------------------------------------------------------------------*/
-#include "registeredObject.H"
-#include "scalar.H"
-#include "vector.H"
 
+#include "registeredObject.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 template<class Type>
@@ -48,20 +46,66 @@ Foam::registeredObject<Type>::registeredObject
 
 }
 
-namespace Foam
+template<class Type>
+Foam::registeredObject<Type>::registeredObject
+(
+    Tuple2<word,Type> obj,
+    const objectRegistry& db
+)
+:    
+    regIOobject
+    (
+        IOobject
+        (
+            obj.first(),
+            obj.first(), // filename is irrelevant
+            db,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE,
+            false  //register object
+        )
+    ),
+    name_(obj.first()),
+    T_(obj.second())
 {
-    defineTemplateTypeNameWithName(registeredObject<scalar>,"regScalar");
-    defineTemplateTypeNameWithName(registeredObject<vector>,"regVector");
-    defineTemplateTypeNameWithName(registeredObject<tensor>,"regTensor");
-    defineTemplateTypeNameWithName(registeredObject<symmTensor>,"regSymmTensor");
-    defineTemplateTypeNameWithName(registeredObject<sphericalTensor>,"regSphericalTensor");
+
 }
 
-template class Foam::registeredObject<Foam::scalar>;
+namespace Foam
+{
+    defineTemplateTypeNameWithName(registeredObject<bool>,"regBool");
+    defineTemplateTypeNameWithName(registeredObject<word>,"regWord");
+    defineTemplateTypeNameWithName(registeredObject<label>,"regLabel");
+    defineTemplateTypeNameWithName(registeredObject<scalar>,"regScalar");
+    defineTemplateTypeNameWithName(registeredObject<vector>,"regVector");
+    defineTemplateTypeNameWithName(registeredObject<symmTensor>,"regSymmTensor");
+    defineTemplateTypeNameWithName(registeredObject<sphericalTensor>,"regSphericalTensor");
+    defineTemplateTypeNameWithName(registeredObject<tensor>,"regTensor");
+
+    defineTemplateTypeNameWithName(registeredObject<Field<scalar>>,"regScalarField");
+    defineTemplateTypeNameWithName(registeredObject<Field<vector>>,"regVectorField");
+    defineTemplateTypeNameWithName(registeredObject<Field<symmTensor>>,"regSymmTensorField");
+    defineTemplateTypeNameWithName(registeredObject<Field<sphericalTensor>>,"regSphericalTensorField");
+    defineTemplateTypeNameWithName(registeredObject<Field<tensor>>,"regTensorField");
+}
+
+// base types
+template class Foam::registeredObject<bool>; // FMI 2.0
+template class Foam::registeredObject<Foam::word>; // FMI 2.0
+template class Foam::registeredObject<Foam::label>; // FMI 2.0
+template class Foam::registeredObject<Foam::scalar>; // FMI 2.0
 template class Foam::registeredObject<Foam::vector>;
 template class Foam::registeredObject<Foam::symmTensor>;
 template class Foam::registeredObject<Foam::sphericalTensor>;
 template class Foam::registeredObject<Foam::tensor>;
+
+// Fields
+template class Foam::registeredObject<Foam::Field<Foam::scalar>>;
+template class Foam::registeredObject<Foam::Field<Foam::vector>>;
+template class Foam::registeredObject<Foam::Field<Foam::symmTensor>>;
+template class Foam::registeredObject<Foam::Field<Foam::sphericalTensor>>;
+template class Foam::registeredObject<Foam::Field<Foam::tensor>>;
+
 
 
 

@@ -60,7 +60,9 @@ libs(externalComm)
     val2 = newValue;
 ```
 
-## Design
+## Implementation
+
+### Data
 
 As hinted above the approach is similar to FMI standard with the categorization of variables in 3 causality:
 
@@ -68,8 +70,32 @@ As hinted above the approach is similar to FMI standard with the categorization 
 - output -> changes in time (and space)
 - parameter -> constant in time (and space)
 
+The core class commDataLayer creates 3 objectRegistries one for each causality that are accessible with an enum:
+
+- commDataLayer::causality::in
+- commDataLayer::causality::parameter
+- commDataLayer::causality::out
 
 
+Each of these objectRegistries store and manage the objects passed to them. The elements in the objectsRegistry can be accessed similar to a hashtable. The data is stored in the template class registeredObject<Type> which currently features following types
 
+- primitive Type
+    - bool -> FMI 2.0
+    - word -> FMI 2.0
+    - label -> FMI 2.0
+    - scalar -> FMI 2.0
+    - vector
+    - symmTensor
+    - sphericalTensor
+    - tensor
+
+- fields
+    - Field<scalar>
+    - Field<vector>
+    - Field<symmTensor>
+    - Field<sphericalTensor>
+    - Field<tensor>
+
+### Comm
 
 ### example

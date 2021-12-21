@@ -41,7 +41,7 @@ entries:
       url: /doc_installation.html
       output: web, pdf
 
-  - title: Couple your Code
+  - title: Usage
     output: web, pdf
     folderitems:
 

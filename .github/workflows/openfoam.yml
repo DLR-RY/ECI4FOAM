@@ -24,9 +24,10 @@ jobs:
         # setup
         export WM_NCOMPPROCS=2
         python -m pip install --upgrade pip
+        
+        # similar to build-ECI4FOAM.sh
         pip install oftest conan
-        git submodule init
-        git submodule update
+        git submodule update --init --recursive
         
         #install generator
         cd OpenFOAMGen/OpenFOAMGen

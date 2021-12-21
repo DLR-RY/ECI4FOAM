@@ -37,15 +37,10 @@ Foam::websocket::websocket
     ws_(ioc_),
     addr_()
 {
-    // The io_context is required for all I/O
+    // 
     word host = dict_.get<word>("host");
     word port = dict_.get<word>("port");
-    // Info << "connecting to " << host << " on port " << port << endl;
-    // net::io_context ioc;
-
-    // // These objects perform our I/O
-    // tcp::resolver resolver{ioc};
-    // ws_ = beast::websocket::stream<tcp::socket>(ioc);
+    word endpoint = dict.getOrDefault<word>("endPoint","/")
 
     // Look up the domain name
     auto const results = resolver_.resolve(host, port);
@@ -84,18 +79,15 @@ Foam::word Foam::websocket::read()
 {
     beast::flat_buffer buffer;
 
-    // Read a message into our buffer
     ws_.read(buffer);
-    // auto j3 = json::parse(boost::beast::buffers_to_string(buffer.data()));
+
     word answer = boost::beast::buffers_to_string(buffer.data());
-    // std::cout << "j3  " << j3["id"] << std::endl;
-    Info << answer << endl;
+
     return answer;
 }
 
 void Foam::websocket::write(word w)
 {
-    // ws_.write(net::buffer(std::string("test")));
     ws_.write(net::buffer(w));
 }
 
