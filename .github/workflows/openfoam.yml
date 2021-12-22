@@ -42,3 +42,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         openfoam2106 -c "py.test -m 'not slow'"
+
+    - name: upload logs
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: logs
