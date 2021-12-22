@@ -64,6 +64,13 @@ public:
         const objectRegistry& db
     );
 
+    // Constructors
+    registeredObject
+    (
+        Tuple2<word,Type> obj,
+        const objectRegistry& db
+    );
+
 
     // Member Functions    
 

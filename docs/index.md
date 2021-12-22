@@ -6,18 +6,16 @@ permalink: index.html
 summary: ECI4FOAM with testsuite and documenation
 ---
 
-ECI4FOAM to quickly generate a library with testsuite and hosted documenation
+External Coupling Interface 4 FOAM ECI4FOAM provides an interface for coupling external tools and software to OpenFOAM
 
-zip or clone this library and edit it from there
+## Installation
 
-## Installation OpenFOAM
-
-requires OpenFOAM of2012 sourced and installed
+requires OpenFOAM of2012 or higher sourced and installed and python 3.7+
 
 ```
-./Allwmake
+./build-ECI4FOAM.sh
 ```
-## Installation Testsuite
+## Testsuite
 
 install oftest to automatically test OpenFOAM with py.test
 
@@ -33,5 +31,3 @@ py.test
 {% include links.html %}
 
 
-
-{% include links.html %}

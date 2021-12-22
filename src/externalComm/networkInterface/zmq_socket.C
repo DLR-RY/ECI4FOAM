@@ -31,19 +31,33 @@ Foam::zmq_socket::zmq_socket
     const dictionary& dict
 )
 :
-    dict_(dict),
     ctx_(),
     sock_(ctx_, zmq::socket_type::req),
     addr_()
 {
     // The io_context is required for all I/O
-    word host = dict_.get<word>("host");
-    label port = dict_.get<label>("port");
+    word host = dict.get<word>("host");
+    label port = dict.get<label>("port");
     
     addr_ = host + ':' + name(port);
 
     sock_.connect(word("tcp://" + addr_));
-    Info << "connect tp " << addr_ << endl;
+}
+
+Foam::zmq_socket::zmq_socket
+(
+    word host,
+    label port
+)
+:
+    ctx_(),
+    sock_(ctx_, zmq::socket_type::req),
+    addr_()
+{
+    addr_ = host + ':' + name(port);
+
+    sock_.connect(word("tcp://" + addr_));
+
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //

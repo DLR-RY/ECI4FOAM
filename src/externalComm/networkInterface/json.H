@@ -44,11 +44,6 @@ namespace Foam
         s.ref() = j[s.name()];
     }
 
-    void add_to_json(json& j, const registeredObject<scalar>& s)
-    {
-        j[s.name()] = s.ref();
-    }
-
     void to_json(json& j, const registeredObject<vector>& s)
     {
         const vector& sref = s.ref();
@@ -63,10 +58,5 @@ namespace Foam
         sref.z() = j[s.name()][2];
     }
 
-    void add_to_json(json& j, const registeredObject<vector>& s)
-    {
-        const vector& sref = s.ref();
-        j[s.name()] = {sref.x(),sref.y(),sref.z()};
-    }
 
 }

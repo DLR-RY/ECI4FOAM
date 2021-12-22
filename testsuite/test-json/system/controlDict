@@ -11,58 +11,43 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "system";
-    object      fvSolution;
+    object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-solvers
-{
-    "rho.*"
-    {
-        solver          PCG;
-        preconditioner  DIC;
-        tolerance       0;
-        relTol          0;
-    }
+application     test-json;
 
-    p_rgh
-    {
-        solver          PCG;
-        preconditioner  DIC;
-        tolerance       1e-8;
-        relTol          0.01;
-    }
+startFrom       startTime;
 
-    p_rghFinal
-    {
-        $p_rgh;
-        relTol          0;
-    }
+startTime       0;
 
-    "(U|h|e|k|epsilon|R)"
-    {
-        solver          PBiCGStab;
-        preconditioner  DILU;
-        tolerance       1e-6;
-        relTol          0.1;
-    }
+stopAt          endTime;
 
-    "(U|h|e|k|epsilon|R)Final"
-    {
-        $U;
-        relTol          0;
-    }
-}
+endTime         2000;
 
-PIMPLE
-{
-    momentumPredictor yes;
-    nOuterCorrectors 1;
-    nCorrectors     2;
-    nNonOrthogonalCorrectors 0;
-    pRefCell        0;
-    pRefValue       1e5;
-}
+deltaT          2;
+
+writeControl    timeStep;
+
+writeInterval   100;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  no;
+
+maxCo           0.5;
 
 
 // ************************************************************************* //

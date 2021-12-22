@@ -15,85 +15,28 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Class
-    Foam::zmq_socket
-
-Description
-    zmq req client connects to address via tcp
-
-Author
-    Henning Scheufler, DLR, all rights reserved.
-
-SourceFiles
-
-
 \*---------------------------------------------------------------------------*/
 
-#ifndef zmq_socket_H
-#define zmq_socket_H
-
-#include "typeInfo.H"
-#include "dictionary.H"
-
-#include "zmq_addon.hpp"
+#include "zmq_socket.H"
 
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+#define CATCH_CONFIG_MAIN 
+#include <catch2/catch.hpp>
 
-
-namespace Foam 
+// basically checks if installed correctly
+TEST_CASE( "test zmq", "[zmq]" )
 {
+    // create and connect socket
+    Foam::zmq_socket sock("127.0.0.1",8000);
 
-class zmq_socket
-{
-private:
+    Foam::word send = "Hello";
+    sock.write(send);
+        
 
-    //- zmq context
-    zmq::context_t ctx_;
-
-    //- zmq req socket 
-    zmq::socket_t sock_;
-
-    //- server address
-    word addr_;
+    Foam::word recv = sock.read();
+    REQUIRE(recv == "World");
+}
 
 
-public:
-
-    //- Runtime type information
-    TypeName("zmq_socket");
-
-    // Constructors
-    zmq_socket
-    (
-        const dictionary& dict
-    );
-
-    // construct from components
-    zmq_socket
-    (
-        word host,
-        label port
-    );
-
-    //- Destructor
-    virtual ~zmq_socket();
-
-    word read();
-
-    void write(word w);
-
-};
-
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-} // End namespace Foam
-
-
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#endif
 
 // ************************************************************************* //

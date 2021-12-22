@@ -15,7 +15,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     buoyantPimpleFoam;
+application     test-dataLayer;
 
 startFrom       startTime;
 
@@ -49,19 +49,5 @@ adjustTimeStep  no;
 
 maxCo           0.5;
 
-functions
-{
-    htc
-    {
-        type            heatTransferCoeff;
-        libs            (fieldFunctionObjects);
-        field           T;
-        writeControl    outputTime;
-        writeInterval   1;
-        htcModel        fixedReferenceTemperature;
-        patches         (ceiling);
-        TRef            373;
-    }
-}
 
 // ************************************************************************* //

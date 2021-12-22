@@ -1,6 +1,6 @@
-# ECFOAM
+# ECI4FOAM
 
-Coupling between FMUs and OpenFOAM
+External Coupling Interface 4 FOAM ECI4FOAM provides an interface for coupling external tools and software to OpenFOAM
 
 # Documentation
 
@@ -8,50 +8,23 @@ Coupling between FMUs and OpenFOAM
 
 ## Installation
 
-with conda:
-### python
+requires OpenFOAM of2012 or higher sourced and installed and python 3.7+
 
 ```
-conda create -n omsim python=3.9
-conda activate omsim
-conda install requests
-conda install numpy
-conda install pandas
-conda install -c conda-forge pyfmi 
-pip install conan
-pip install OMSimulator
+./build-ECI4FOAM.sh
+```
+## Testsuite
+
+install oftest to automatically test OpenFOAM with py.test
+
+```
 pip install oftest
-pip install pyzmq
-pip install .
 ```
 
-### OpenFOAM
-
-
-### download OpenFOAMGen
-
-
-
-tested with openfoam version 2012
-
+run the test enviroment
 ```
-./Allwmake
-```
-
-The installation requires python that is used to 
-
-
-
-
-## Test Installation
-
-The FMU are only compatible with glib 2.29 which is shipped with ubuntu 20.04
-sudo apt-get install liblapack3
-```
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PATH_PYTHON3.9
 py.test
 ```
-
 
 ## Build Documentation
 

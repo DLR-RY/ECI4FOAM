@@ -11,6 +11,7 @@ jobs:
   build-and-test:
 
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
     - uses: actions/checkout@v2
@@ -24,9 +25,10 @@ jobs:
         # setup
         export WM_NCOMPPROCS=2
         python -m pip install --upgrade pip
+        
+        # similar to build-ECI4FOAM.sh
         pip install oftest conan
-        git submodule init
-        git submodule update
+        git submodule update --init --recursive
         
         #install generator
         cd OpenFOAMGen/OpenFOAMGen
@@ -35,8 +37,16 @@ jobs:
 
         # compile OpenFOAM
         openfoam2106 -c ./Allwmake
-    # - name: test
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     pip install oftest scipy casefoam
-    #     openfoam2106 -c "py.test -m 'not slow'"
+    - name: test
+      continue-on-error: true
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        openfoam2106 -c "py.test -v --tb=auto -s"
+
+    - name: upload logs
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: logs
+        path: logs

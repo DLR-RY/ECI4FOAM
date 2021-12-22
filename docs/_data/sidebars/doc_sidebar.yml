@@ -41,7 +41,7 @@ entries:
       url: /doc_installation.html
       output: web, pdf
 
-  - title: Library Design
+  - title: Usage
     output: web, pdf
     folderitems:
 
@@ -49,8 +49,12 @@ entries:
       url: /doc_OpenFOAM.html
       output: web, pdf
 
-    - title: Library Design
-      url: /doc_architecture.html
+    - title: externalComm
+      url: /doc_externalComm.html
+      output: web, pdf
+
+    - title: python-wrapper
+      url: /doc_python_wrapper.html
       output: web, pdf
 
   - title: Input Output Functions

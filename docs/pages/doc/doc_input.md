@@ -6,6 +6,16 @@ sidebar: doc_sidebar
 folder: doc
 ---
 
+## Usage
+
+add following library to the controlDict
+
+```
+libs(externalComm)
+```
+
+
+
 ## Boundary Conditions
 
 add following entries to 0/\<field name\>
