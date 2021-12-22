@@ -17,19 +17,18 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-//#include <nlohmann/json.hpp>
 #include <json.H>
-
-
-#include <iostream>
-#include <iomanip>
 #include <fstream>
 
-// for convenience
+#define CATCH_CONFIG_MAIN 
+#include <catch2/catch.hpp>
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 using json = nlohmann::json;
 
-// Sends a WebSocket message and prints the response
-int main(int argc, char** argv)
+// basically checks if installed correctly
+TEST_CASE( "test json", "[json]" )
 {
     // create an empty structure (null)
     json j;
@@ -37,63 +36,14 @@ int main(int argc, char** argv)
     // add a number that is stored as double (note the implicit conversion of j to an object)
     j["pi"] = 3.141;
 
-    // add a Boolean that is stored as bool
-    j["happy"] = true;
+    REQUIRE(j["pi"] == 3.141);
 
-    // add a string that is stored as std::string
-    j["name"] = "Niels";
+    std::ofstream os("test.json");
+    
 
-    // add another null object by passing nullptr
-    j["nothing"] = nullptr;
-
-    // add an object inside the object
-    j["answer"]["everything"] = 42;
-
-    // add an array that is stored as std::vector (using an initializer list)
-    j["list"] = { 1, 0, 2 };
-
-    // add another object (using an initializer list of pairs)
-    j["object"] = { {"currency", "USD"}, {"value", 42.99} };
-
-    // instead, you could also write (which looks very similar to the JSON above)
-    json j2 = {
-        {"pi", 3.141},
-        {"happy", true},
-        {"name", "Niels"},
-        {"nothing", nullptr},
-        {"answer", {
-            {"everything", 42}
-        }},
-        {"list", {1, 0, 2}},
-        {"object", {
-            {"currency", "USD"},
-            {"value", 42.99}
-        }}
-    };
-
-
-        // create object from string literal
-    json j4 = "{ \"happy\": true, \"pi\": 3.141 }"_json;
-
-    // or even nicer with a raw string literal
-    auto j5 = R"(
-    {
-        "happy": true,
-        "pi": 3.141
-    }
-    )"_json;
-
-    // parse explicitly
-    auto j3 = json::parse("{ \"happy\": true, \"pi\": 3.141 }");
-
-
-    // explicit conversion to string
-    std::string s = j.dump();    // {\"happy\":true,\"pi\":3.141}
-
-    std::cout << s << std::endl;
-
-    // serialization with pretty printing
-    // pass in the amount of spaces to indent
-    std::cout << j4.dump(4) << std::endl;
- 
+    os << j;
 }
+
+
+
+// ************************************************************************* //

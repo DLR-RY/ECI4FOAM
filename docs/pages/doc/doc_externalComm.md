@@ -8,17 +8,17 @@ folder: doc
 
 The main concept of the externalComm library is similar to the FMI Standard and it can be viewed as blackbox with time-dependent input and output values and parameters that are fixed in time.
 
-## Usage
+# Usage
 
 
-### add to OpenFOAM
+## add to OpenFOAM
 add following library to the controlDict
 
 ```
 libs(externalComm)
 ```
 
-### input
+## input
 
 ```cpp
     // create new entry
@@ -39,7 +39,7 @@ libs(externalComm)
     val = newValue;
 ```
 
-### output
+## output
 
 ```cpp
     // create new entry
@@ -60,9 +60,9 @@ libs(externalComm)
     val2 = newValue;
 ```
 
-## Implementation
+# Implementation
 
-### Data
+## Data
 
 As hinted above the approach is similar to FMI standard with the categorization of variables in 3 causality:
 
@@ -70,32 +70,44 @@ As hinted above the approach is similar to FMI standard with the categorization 
 - output -> changes in time (and space)
 - parameter -> constant in time (and space)
 
-The core class commDataLayer creates 3 objectRegistries one for each causality that are accessible with an enum:
+The core class `commDataLayer` creates 3 `objectRegistries` one for each causality that are accessible with an enum:
 
-- commDataLayer::causality::in
-- commDataLayer::causality::parameter
-- commDataLayer::causality::out
+- `commDataLayer::causality::in`
+- `commDataLayer::causality::parameter`
+- `commDataLayer::causality::out`
 
 
-Each of these objectRegistries store and manage the objects passed to them. The elements in the objectsRegistry can be accessed similar to a hashtable. The data is stored in the template class registeredObject<Type> which currently features following types
+Each of these `objectRegistries` store and manage the objects passed to them. The elements in the objectsRegistry can be accessed similar to a hashtable. The data is stored in the template class `registeredObject<Type>` which currently features following Types:
 
-- primitive Type
-    - bool -> FMI 2.0
-    - word -> FMI 2.0
-    - label -> FMI 2.0
-    - scalar -> FMI 2.0
-    - vector
-    - symmTensor
-    - sphericalTensor
-    - tensor
+- Primitive Types:
+    - `bool`    -> FMI 2.0
+    - `word`    -> FMI 2.0
+    - `label`   -> FMI 2.0
+    - `scalar`  -> FMI 2.0
+    - `vector`
+    - `symmTensor`
+    - `sphericalTensor`
+    - `tensor`
 
-- fields
-    - Field<scalar>
-    - Field<vector>
-    - Field<symmTensor>
-    - Field<sphericalTensor>
-    - Field<tensor>
+- Fields:
+    - `Field<scalar>`
+    - `Field<vector>`
+    - `Field<symmTensor>`
+    - `Field<sphericalTensor>`
+    - `Field<tensor>`
 
-### Comm
+## Comm
 
-### example
+### Websocket
+
+
+### Zmq
+
+
+### grpc
+
+## Json
+
+
+
+## example

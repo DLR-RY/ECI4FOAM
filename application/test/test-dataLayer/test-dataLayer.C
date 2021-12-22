@@ -20,49 +20,109 @@ License
 #include "fvCFD.H"
 #include "commDataLayer.H"
 #include "registeredObject.H"
+#include "Field.H"
 
+#define CATCH_CONFIG_MAIN 
+#include <catch2/catch.hpp>
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-int main(int argc, char *argv[])
+TEST_CASE( "commDataLayer store and erase multiple registries", "[commDataLayer]" )
 {
-    #include "setRootCase.H"
-    #include "createTime.H"
-    #include "createMesh.H"
+    int argc = 1;
+    char **argv = static_cast<char**>(malloc(sizeof(char*)));
+    char executable[] = {'m','a','i','n'};
+    argv[0] = executable;
+    Foam::argList args(argc, argv,false,false,false);
 
-    Info<< "Reading velocity field U\n" << endl;
-    volScalarField T
-    (
-        IOobject
-        (
-            "T",
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh
-    );
+    // #include "setRootCase.H"
+    #include "createTime.H" // create runTime
 
 
-    Info<< "\nStarting time loop\n" << endl;
+    commDataLayer& data = commDataLayer::New(runTime);
 
-    while (runTime.run())
-    {
+    data.storeObj(1,"test_in",commDataLayer::causality::in);
+    data.storeObj(1,"test_out",commDataLayer::causality::out);
+    data.storeObj(1,"test_parameter",commDataLayer::causality::parameter);
 
-        ++runTime;
+    const auto& in = data.getRegistry(commDataLayer::causality::in);
+    const auto& out = data.getRegistry(commDataLayer::causality::out);
+    const auto& parameter = data.getRegistry(commDataLayer::causality::parameter);
+    
+    REQUIRE( 1 == in.classes().size());
+    REQUIRE( 1 == out.classes().size());
+    REQUIRE( 1 == parameter.classes().size());
 
-        Info<< "Time = " << runTime.timeName() << nl << endl;
+    data.eraseObj("test_in",commDataLayer::causality::in);
+    data.eraseObj("test_out",commDataLayer::causality::out);
+    data.eraseObj("test_parameter",commDataLayer::causality::parameter);
 
-        runTime.write();
+    REQUIRE( 0 == in.classes().size());
+    REQUIRE( 0 == out.classes().size());
+    REQUIRE( 0 == parameter.classes().size());
 
-        runTime.printExecutionTime(Info);
-    }
-
-
-    Info<< "\nEnd\n" << nl;
-
-    return 0;
 }
+
+TEST_CASE( "commDataLayer store, get and mod", "[commDataLayer]" )
+{
+    int argc = 1;
+    char **argv = static_cast<char**>(malloc(sizeof(char*)));
+    char executable[] = {'m','a','i','n'};
+    argv[0] = executable;
+    Foam::argList args(argc, argv,false,false,false);
+
+    // #include "setRootCase.H"
+    #include "createTime.H" // create runTime
+
+
+    commDataLayer& data = commDataLayer::New(runTime);
+
+    // base types
+    bool test_b = false; // FMI 2.0
+    word test_w = "asd"; // FMI 2.0
+    label test_l = 0; // FMI 2.0
+    scalar test_s = 0.0; // FMI 2.0
+    vector test_v = Zero;
+    symmTensor test_st = Zero;
+    sphericalTensor test_spt = Zero;
+    tensor test_t = Zero;
+
+    // // Fields
+    Field<scalar> test_fs(2,Zero);
+    Field<vector> test_fv(2,Zero);
+    Field<symmTensor> test_fst(2,Zero);
+    Field<sphericalTensor> test_fsp(2,Zero);
+    Field<tensor> test_ft(2,Zero);
+
+    data.storeObj(test_b,"test_b",commDataLayer::causality::in);
+    data.storeObj(test_w,"test_w",commDataLayer::causality::in);
+    data.storeObj(test_l,"test_l",commDataLayer::causality::in);
+    data.storeObj(test_s,"test_s",commDataLayer::causality::in);
+    data.storeObj(test_v,"test_v",commDataLayer::causality::in);
+    data.storeObj(test_st,"test_st",commDataLayer::causality::in);
+    data.storeObj(test_spt,"test_spt",commDataLayer::causality::in);
+    data.storeObj(test_t,"test_t",commDataLayer::causality::in);
+    data.storeObj(test_fs,"test_fs",commDataLayer::causality::in);
+    data.storeObj(test_fv,"test_fv",commDataLayer::causality::in);
+    data.storeObj(test_fst,"test_fst",commDataLayer::causality::in);
+    data.storeObj(test_fsp,"test_fsp",commDataLayer::causality::in);
+    data.storeObj(test_ft,"test_ft",commDataLayer::causality::in);
+
+    const auto& in = data.getRegistry(commDataLayer::causality::in);
+    
+    REQUIRE( 13 == in.classes().size());
+
+    scalar& s = data.getObj<scalar>("test_s",commDataLayer::causality::in);
+    s = 100;
+    scalar changeVal = data.getObj<scalar>("test_s",commDataLayer::causality::in);
+    REQUIRE( 100 == changeVal);
+
+    scalarField& sf = data.getObj<Field<scalar> >("test_fs",commDataLayer::causality::in);
+    sf = 100;
+    scalarField changeValField = data.getObj<scalarField>("test_fs",commDataLayer::causality::in);
+    REQUIRE( 100 == average(changeValField));
+
+}
+
 
 
 // ************************************************************************* //
