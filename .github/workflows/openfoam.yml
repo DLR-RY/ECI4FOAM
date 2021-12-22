@@ -44,6 +44,7 @@ jobs:
         openfoam2106 -c "py.test -v --tb=auto -s"
 
     - name: upload logs
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: logs
