@@ -5,7 +5,7 @@ EXE_INC = \
     -I../../../src/externalComm/lnInclude \
     -I../../../src/embeddingPython/lnInclude \
 
-LIB_LIBS = \
+EXE_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
     -lembPython \
     -lexternalComm \

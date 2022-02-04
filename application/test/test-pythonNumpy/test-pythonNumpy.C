@@ -32,13 +32,11 @@ Description
 
 #include "fvCFD.H"
 #include "pyInterp.H"
-// #include <pybind11/embed.h>
 
-
-// #include "sigFpe.H"
-// #include "sigInt.H"
-// #include "sigQuit.H"
-// #include "sigSegv.H"
+#include "sigFpe.H"
+#include "sigInt.H"
+#include "sigQuit.H"
+#include "sigSegv.H"
 namespace py = pybind11;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -50,19 +48,16 @@ int main(int argc, char *argv[])
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    // runTime.printExecutionTime(Info);
+    runTime.printExecutionTime(Info);
 
     pyInterp::New(runTime);
-    // py::scoped_interpreter guard{};
+    sigFpe::unset(true);
 
-    py::print("Hello, World!"); // use the Python 
+    py::object pyC = py::module_::import("testing").attr("Testing");
 
-    // sigFpe::unset(false);
-    // py::object pyC = py::module_::import("testing").attr("Testing");
-    // sigFpe::set(false);
+    sigFpe::set(true);
 
-
-    // pyC("Hello");
+    pyC("Hello");
 
     Info<< "End\n" << endl;
 

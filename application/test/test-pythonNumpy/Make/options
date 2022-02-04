@@ -1,4 +1,4 @@
-PY_RPATH := -Wl,-rpath=/media/henning/ssd1linux/miniconda3/envs/omsim/lib
+PY_RPATH := -Wl,-rpath=/media/henning/ssd1linux/miniconda3/envs/py39/lib
 
 
 EXE_INC = \
@@ -6,9 +6,9 @@ EXE_INC = \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude \
     -I../../../src/externalComm/lnInclude \
-    -I../../../src/embeddingPython/lnInclude
+    -I../../../src/embeddingPython/lnInclude \
 
-LIB_LIBS = \
+EXE_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
     -lembPython \
     -lexternalComm \
