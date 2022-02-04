@@ -59,8 +59,6 @@ class websocket
 {
 private:
 
-    const dictionary& dict_;
-
     net::io_context ioc_;
     tcp::resolver resolver_;
     beast::websocket::stream<tcp::socket> ws_;
@@ -77,6 +75,14 @@ public:
     websocket
     (
         const dictionary& dict
+    );
+
+    // construct from components
+    websocket
+    (
+        word host,
+        label port,
+        word endpoint
     );
 
     

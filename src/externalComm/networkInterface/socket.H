@@ -56,7 +56,6 @@ class socket
 {
 private:
 
-    const dictionary& dict_;
 
     net::io_context ioc_;
     tcp::resolver resolver_;
@@ -74,6 +73,13 @@ public:
     socket
     (
         const dictionary& dict
+    );
+
+    // construct from components
+    socket
+    (
+        word host,
+        label port
     );
 
     //- Destructor

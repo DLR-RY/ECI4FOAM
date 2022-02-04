@@ -5,12 +5,31 @@ function pylib {
     echo $PYVERSION
 }
 
+
+function pyver {
+    PYVERSION=$(python --version | grep -o -P '3.{0,2}')
+    echo -e $PYVERSION
+}
+
+
 function pyincludes {
     PYINC=$(python3-config --includes | sed 's/ / \\ \\n/g')
     # echo $($PY_INCS | sed 's/ / \\ \\n/g')
     includes="PY_INCS := \ \n
         -Wno-old-style-cast \ \n""$PYINC"
         
+    echo -e $includes
+}
+
+function pyincludeswithNumpy {
+    PYINC=$(python3-config --includes | sed 's/ / \\ \\n/g')
+    py_version=$(pyver)
+    echo $py_version
+    PYPREFIX=$(python3-config --prefix)
+    includes="PY_INCS := \ \n
+        -Wno-old-style-cast \ \n""$PYINC"
+    includes="$includes \ \n-I$PYPREFIX/lib/python$py_version/site-packages/numpy/core/include" 
+      
     echo -e $includes
 }
 
