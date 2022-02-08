@@ -57,19 +57,16 @@ Foam::solidBodyMotionFunctions::coupledRotationMotion::coupledRotationMotion
 :
     solidBodyMotionFunction(SBMFCoeffs, runTime),
     rollPitchYaw_(SBMFCoeffs_.get<vector>("rollPitchYaw")),
-    CofR_(SBMFCoeffs_.get<vector>("CofR")),
+    CofR_(SBMFCoeffs_.getOrDefault<vector>("CofR",Zero)),
     rollPitchYawName_(SBMFCoeffs_.get<word>("rollPitchYawName")),
-    CofRName_(SBMFCoeffs_.get<word>("CofRName"))
+    CofRName_(SBMFCoeffs_.getOrDefault<word>("CofRName",""))
 {
     read(SBMFCoeffs);
-
-
 }
 
 
-
-
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
 
 Foam::septernion
 Foam::solidBodyMotionFunctions::coupledRotationMotion::transformation() const
@@ -78,13 +75,17 @@ Foam::solidBodyMotionFunctions::coupledRotationMotion::transformation() const
 
     commDataLayer& data = commDataLayer::New(time_);
 
-    vector rollPitchYawName =
+    vector rollPitchYaw =
         data.getObj<vector>(rollPitchYawName_,commDataLayer::causality::in);
 
-    vector CofR =
-        data.getObj<vector>(CofRName_,commDataLayer::causality::in);
+    vector CofR = Zero;
+    if (CofRName_ != "")
+    {
+        CofR = 
+            data.getObj<vector>(CofRName_,commDataLayer::causality::in);
+    }
 
-    quaternion R(quaternion::XYZ, rollPitchYawName);
+    quaternion R(quaternion::XYZ, rollPitchYaw);
     septernion TR(septernion(-CofR)*R*septernion(CofR));
 
     DebugInFunction << "Time = " << t << " transformation: " << TR << endl;
@@ -103,7 +104,10 @@ bool Foam::solidBodyMotionFunctions::coupledRotationMotion::read
     commDataLayer& data = commDataLayer::New(time_);
 
     data.storeObj(rollPitchYaw_,rollPitchYawName_,commDataLayer::causality::in);
-    data.storeObj(CofR_,CofRName_,commDataLayer::causality::in);
+    if (CofRName_ != "")
+    {
+        data.storeObj(CofR_,CofRName_,commDataLayer::causality::in);
+    }
 
     return true;
 }
