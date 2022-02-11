@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ Usage
     <patchName>
     {
         type            coupledUniformExternalValue;
-        uniformValue    constant 0.2;
+        inputName       Tin;
     }
     \endverbatim
 

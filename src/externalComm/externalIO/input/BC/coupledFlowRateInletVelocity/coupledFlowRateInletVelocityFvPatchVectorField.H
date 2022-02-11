@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ Usage
         type                flowRateInletVelocity;
         volumetricFlowRate  0.2;
         extrapolateProfile  yes;
+        flowRateName        mdot_in;
         value               uniform (0 0 0);
     }
     \endverbatim
@@ -65,6 +66,7 @@ Usage
         massFlowRate        0.2;
         extrapolateProfile  yes;
         rho                 rho;
+        flowRateName        mdot_in;
         rhoInlet            1.0;
         value               uniform (0 0 0);
     }

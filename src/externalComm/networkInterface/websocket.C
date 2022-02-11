@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -47,6 +47,37 @@ Foam::websocket::websocket
 
     // Make the connection on the IP address we get from a lookup
     auto ep = net::connect(ws_.next_layer(), results);
+  
+    addr_ = host + ':' + std::to_string(ep.port());
+
+    // Set a decorator to change the User-Agent of the handshake
+    ws_.set_option(beast::websocket::stream_base::decorator(
+        [](beast::websocket::request_type& req)
+        {
+            req.set(http::field::user_agent,
+                std::string(BOOST_BEAST_VERSION_STRING) +
+                    " websocket-client-coro");
+        }));
+
+    // Perform the websocket handshake
+    ws_.handshake(addr_, endpoint);
+}
+
+
+Foam::websocket::websocket
+(
+    word host,
+    label port,
+    word endpoint
+)
+:
+    ioc_(),
+    resolver_(ioc_),
+    ws_(ioc_),
+    addr_()
+{
+    // Look up the domain name
+    auto const results = resolver_.resolve(host, port);
 
     // Update the host_ string. This will provide the value of the
     // Host HTTP header during the WebSocket handshake.
@@ -85,6 +116,7 @@ Foam::word Foam::websocket::read()
 
     return answer;
 }
+
 
 void Foam::websocket::write(word w)
 {

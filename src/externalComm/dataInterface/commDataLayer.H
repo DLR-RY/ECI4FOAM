@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -19,6 +19,28 @@ Class
     Foam::commDataLayer
 
 Description
+    Database for registeredObjects allows to store, update and get variables
+
+Usage
+    commDataLayer& data = commDataLayer::New(time_);
+
+    // get scalar called a "var_a" from registry input
+    scalar var_a = data.getObj<scalar>("var_a",commDataLayer::causality::in);
+
+    // store scalar called a "var_a" in registry input
+    data.storeObj(scalar(0.0),"var_a",commDataLayer::causality::in);
+
+    // update 
+    vector& var_a = data.getObj<vector>("var_a",commDataLayer::causality::out);
+    var_a = 10;
+
+    options for causality are:
+    enum causality
+    {
+        in,
+        out,
+        parameter
+    };
 
 Author
     Henning Scheufler, DLR, all rights reserved.
@@ -62,18 +84,16 @@ private:
 
     const Time& time_;
 
-    // data required by openfoam
+    //- data required by openfoam
     objectRegistry in_;
 
-    // data required by external programm
+    //- data required by external programm
     objectRegistry out_;
 
-    // are constant for the simulation but are constant for the simulation
-    // similar to FMI standard 2.0+ internal or parameter
+    //- are constant for the simulation
+    //- similar to FMI standard 2.0+ internal or parameter
     objectRegistry parameters_; 
 
-
-    
 
 public:
 
@@ -90,15 +110,20 @@ public:
 
     objectRegistry& getRegistry(commDataLayer::causality causa);
 
+
     const objectRegistry& getRegistry(commDataLayer::causality causa) const;
 
+
     void eraseObj(word objName,causality causa);
+
 
     template<class Type>
     void storeObj(const Type& T,word objName,causality causa);
 
+
     template<class Type>
     Type& getObj(word objName,causality causa);
+
 
     template<class Type>
     const Type& getObj(word objName,causality causa) const;
