@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -21,6 +21,9 @@ Class
 
 Description
     List of function objects with start(), execute() and end() functions
+
+    Decoupling it from the standard function objects it allows it to be moved
+    more easisly into Pimple loops without affecting other function objects
 
 
 See also

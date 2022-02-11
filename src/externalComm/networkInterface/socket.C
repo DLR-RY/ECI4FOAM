@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -84,9 +84,9 @@ Foam::word Foam::socket::read()
     return itemToReceive;
 }
 
+
 void Foam::socket::write(word w)
 {
-
     size_t size = w.size() + 1;
 
     net::write(sock_, net::buffer(&size, sizeof(size_t)));

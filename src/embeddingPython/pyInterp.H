@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ SourceFiles
 #include "Time.H"
 
 namespace py = pybind11;
-// using namespace py::literals;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -51,8 +50,6 @@ class pyInterp
 private:
 
     py::scoped_interpreter interp_;
-    // word_ pym_;
-    // word_ pyc_;
 
 public:
 
@@ -67,13 +64,11 @@ public:
     static pyInterp& New(const Time& time);
 
 
-    // IO
+    // IO required by baseClass
     virtual bool writeData(Ostream&) const
     {
         return true;
     } 
-
-
 
 };
 

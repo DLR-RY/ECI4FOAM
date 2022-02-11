@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@ Class
     Foam::registeredObject
 
 Description
+    Provides a name to simple objects such word scalar tensor or List 
+    and stores it in the registry
 
 Author
     Henning Scheufler, DLR, all rights reserved.
@@ -49,7 +51,10 @@ class registeredObject
     public regIOobject
 {
 
+    //- variable name
     word name_;
+
+    //- variable
     Type T_;
 
 public:
@@ -81,6 +86,7 @@ public:
             return true;
         }
 
+        //- variable name
         const word& name() const
         {
             return name_;
@@ -91,11 +97,13 @@ public:
         //     return name_;
         // }
 
+        //- access Type
         Type& ref()
         {
             return T_;
         }
 
+        //- const access Type
         const Type& ref() const
         {
             return T_;

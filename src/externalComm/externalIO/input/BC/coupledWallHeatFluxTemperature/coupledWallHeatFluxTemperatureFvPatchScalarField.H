@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -52,8 +52,11 @@ Usage
     mode        | 'power', 'flux' or 'coefficient'         | yes |
     Q           | Power [W]                                | for mode 'power' |
     q           | Heat flux [W/m^2]                        | for mode 'flux' |
-    h           | Heat transfer coefficient [W/m^2/K] | for mode 'coefficient' |
-    Ta          | Ambient temperature [K]             | for mode 'coefficient' |
+    QName      | input Name of the heatflux                | for mode 'power' |
+    h           | Heat transfer coefficient [W/m^2/K]      | for mode 'coefficient' |
+    hName_      | input Name of the coefficient            | for mode 'coefficient' |
+    Ta          | Ambient temperature [K]                  | for mode 'coefficient' |
+    TaName      | input Name of the ambient temperature    | for mode 'coefficient' |
     thicknessLayers | Layer thicknesses [m]                | no  |
     kappaLayers | Layer thermal conductivities [W/m/K]     | no  |
     relaxation  | Relaxation for the wall temperature      | no  | 1

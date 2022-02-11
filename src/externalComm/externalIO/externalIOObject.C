@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the VoFLibrary source code library, which is an
+    This file is part of the ECI4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -165,50 +165,3 @@ void Foam::externalIOObject::externalIOObject::updateMesh(const mapPolyMesh&)
 
 void Foam::externalIOObject::externalIOObject::movePoints(const polyMesh&)
 {}
-
-
-// // * * * * * * * * * * * * unavailableexternalIOObject * * * * * * * * * * * * //
-
-// Foam::functionObjects::externalIOObject::unavailableexternalIOObject::unavailableexternalIOObject
-// (
-//     const word& name
-// )
-// :
-//     externalIOObject(name)
-// {}
-
-
-// void Foam::functionObjects::externalIOObject::unavailableexternalIOObject::carp
-// (
-//     std::string message
-// ) const
-// {
-//     FatalError
-//         << "####" << nl
-//         << "    " << type() << " not available" << nl
-//         << "####" << nl;
-
-//     if (message.size())
-//     {
-//         FatalError
-//             << message.c_str() << nl;
-//     }
-
-//     FatalError
-//         << exit(FatalError);
-// }
-
-
-// bool Foam::functionObjects::externalIOObject::unavailableexternalIOObject::execute()
-// {
-//     return true;
-// }
-
-
-// bool Foam::functionObjects::externalIOObject::unavailableexternalIOObject::write()
-// {
-//     return true;
-// }
-
-
-// ************************************************************************* //
