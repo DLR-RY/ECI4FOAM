@@ -4,8 +4,8 @@ baseurl: "/doc-pdf"
 port: 4010
 output: pdf
 product: doc
-print_title: Jekyll theme for documentation — doc product
-print_subtitle: version 0.1
+print_title: External Coupling Interface for FOAM
+print_subtitle: version 1.0
 output: pdf
 defaults:
   -
