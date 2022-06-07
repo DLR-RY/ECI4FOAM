@@ -245,7 +245,7 @@ void Foam::coupledFlowRateInletVelocityFvPatchVectorField::updateCoeffs()
 void Foam::coupledFlowRateInletVelocityFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchField<vector>::write(os);
-    writeEntry("massFlowRate", os);
+    os.writeEntry("massFlowRate", flowRateName_);
     if (!volumetric_)
     {
         os.writeEntryIfDifferent<word>("rho", "rho", rhoName_);
