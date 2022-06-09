@@ -60,6 +60,7 @@ Foam::externalIOObject::extSensor::extSensor
     cellID_(-1)
 {
     read(dict);
+    execute();
 }
 
 
@@ -89,8 +90,12 @@ bool Foam::externalIOObject::extSensor::execute()
     
     scalar& sensor = data.getObj<scalar>(sensorName_,commDataLayer::causality::out);
     const volScalarField& field = mesh_.lookupObject<volScalarField>(fieldName_);
-    sensor = field[cellID_];
-    Info << "sensor value := " << sensor << endl;
+    sensor = -GREAT;
+    if (cellID_ != -1)
+    {
+        sensor = field[cellID_];
+    }
+    reduce(sensor, maxOp<scalar>());
 
     return false;
 }
