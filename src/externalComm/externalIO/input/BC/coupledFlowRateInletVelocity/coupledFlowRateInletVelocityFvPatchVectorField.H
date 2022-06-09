@@ -121,6 +121,9 @@ class coupledFlowRateInletVelocityFvPatchVectorField
         //- Rho initialisation value (for start; if value not supplied)
         scalar rhoInlet_;
 
+        //- init flow value
+        scalar flowInit_;
+
         //- Is volumetric?
         bool volumetric_;
 

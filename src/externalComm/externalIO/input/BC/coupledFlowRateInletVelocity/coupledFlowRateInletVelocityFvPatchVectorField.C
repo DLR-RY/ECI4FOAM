@@ -36,6 +36,7 @@ coupledFlowRateInletVelocityFvPatchVectorField
     flowRateName_(),
     rhoName_("rho"),
     rhoInlet_(0.0),
+    flowInit_(0.0),
     volumetric_(false),
     extrapolateProfile_(false)
 {}
@@ -52,6 +53,7 @@ coupledFlowRateInletVelocityFvPatchVectorField
     fixedValueFvPatchField<vector>(p, iF, dict, false),
     rhoName_("rho"),
     rhoInlet_(dict.getOrDefault<scalar>("rhoInlet", -VGREAT)),
+    flowInit_(0.0),
     volumetric_(false),
     extrapolateProfile_
     (
@@ -65,15 +67,15 @@ coupledFlowRateInletVelocityFvPatchVectorField
     {
         volumetric_ = true;
         flowRateName_ = dict.get<word>("volumetricFlowRate");
-        scalar mdotInit = dict.get<scalar>("vFlowInit");
-        data.storeObj(mdotInit,flowRateName_,commDataLayer::causality::in);
+        flowInit_ = dict.get<scalar>("vFlowInit");
+        data.storeObj(flowInit_,flowRateName_,commDataLayer::causality::in);
     }
     else if (dict.found("massFlowRate"))
     {
         volumetric_ = false;
         flowRateName_ = dict.get<word>("massFlowRate");
-        scalar vdotInit = dict.get<scalar>("mFlowInit");
-        data.storeObj(vdotInit,flowRateName_,commDataLayer::causality::in);
+        flowInit_ = dict.get<scalar>("mFlowInit");
+        data.storeObj(flowInit_,flowRateName_,commDataLayer::causality::in);
         rhoName_ = dict.getOrDefault<word>("rho", "rho");
     }
     else
@@ -112,6 +114,7 @@ coupledFlowRateInletVelocityFvPatchVectorField
     flowRateName_(ptf.flowRateName_),
     rhoName_(ptf.rhoName_),
     rhoInlet_(ptf.rhoInlet_),
+    flowInit_(ptf.flowInit_),
     volumetric_(ptf.volumetric_),
     extrapolateProfile_(ptf.extrapolateProfile_)
 {}
@@ -127,6 +130,7 @@ coupledFlowRateInletVelocityFvPatchVectorField
     flowRateName_(ptf.flowRateName_),
     rhoName_(ptf.rhoName_),
     rhoInlet_(ptf.rhoInlet_),
+    flowInit_(ptf.flowInit_),
     volumetric_(ptf.volumetric_),
     extrapolateProfile_(ptf.extrapolateProfile_)
 {}
@@ -143,6 +147,7 @@ coupledFlowRateInletVelocityFvPatchVectorField
     flowRateName_(ptf.flowRateName_),
     rhoName_(ptf.rhoName_),
     rhoInlet_(ptf.rhoInlet_),
+    flowInit_(ptf.flowInit_),
     volumetric_(ptf.volumetric_),
     extrapolateProfile_(ptf.extrapolateProfile_)
 {}
@@ -245,11 +250,17 @@ void Foam::coupledFlowRateInletVelocityFvPatchVectorField::updateCoeffs()
 void Foam::coupledFlowRateInletVelocityFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchField<vector>::write(os);
-    os.writeEntry("massFlowRate", flowRateName_);
     if (!volumetric_)
     {
+        os.writeEntry("massFlowRate", flowRateName_);
+        os.writeEntry("mFlowInit", flowInit_);
         os.writeEntryIfDifferent<word>("rho", "rho", rhoName_);
         os.writeEntryIfDifferent<scalar>("rhoInlet", -VGREAT, rhoInlet_);
+    }
+    else
+    {
+        os.writeEntry("volumetricFlowRate", flowRateName_);
+        os.writeEntry("vFlowInit", flowInit_);
     }
     os.writeEntry("extrapolateProfile", extrapolateProfile_);
     writeEntry("value", os);
