@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd "${0%/*}" || exit                                # Run from this directory
 
 rm -r lnInclude

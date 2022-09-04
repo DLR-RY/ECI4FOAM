@@ -28,7 +28,6 @@ $(output)/extFunction/extFunction.C
 $(output)/extPatch/extPatch.C
 
 
-networkInterface/socket.C
 networkInterface/zmq_socket.C
 
 LIB = $(FOAM_USER_LIBBIN)/libexternalComm
