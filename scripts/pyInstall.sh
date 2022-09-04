@@ -1,7 +1,10 @@
 #!/bin/bash
 
 function pylib {
-    PYVERSION="-lpython"$(python --version | grep -o -P '3.{0,2}')
+    PY_VNUMBER="$(python --version | cut -d " " -f 2)"
+    PY_MAJOR=$(echo $PY_VNUMBER  | cut -d "." -f 1)
+    PY_MINOR=$(echo $PY_VNUMBER | cut -d "." -f 2)
+    PYVERSION="-lpython$PY_MAJOR.$PY_MINOR"
     echo $PYVERSION
 }
 
