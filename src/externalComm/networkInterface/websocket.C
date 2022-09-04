@@ -31,16 +31,15 @@ Foam::websocket::websocket
     const dictionary& dict
 )
 :
-    dict_(dict),
     ioc_(),
     resolver_(ioc_),
     ws_(ioc_),
     addr_()
 {
     // 
-    word host = dict_.get<word>("host");
-    word port = dict_.get<word>("port");
-    word endpoint = dict.getOrDefault<word>("endPoint","/")
+    word host = dict.get<word>("host");
+    word port = dict.get<word>("port");
+    word endpoint = dict.getOrDefault<word>("endPoint","/");
 
     // Look up the domain name
     auto const results = resolver_.resolve(host, port);
@@ -79,10 +78,9 @@ Foam::websocket::websocket
     // Look up the domain name
     auto const results = resolver_.resolve(host, port);
 
-    // Update the host_ string. This will provide the value of the
-    // Host HTTP header during the WebSocket handshake.
-    // See https://tools.ietf.org/html/rfc7230#section-5.4
-    
+    // Make the connection on the IP address we get from a lookup
+    auto ep = net::connect(ws_.next_layer(), results);
+  
     addr_ = host + ':' + std::to_string(ep.port());
 
     // Set a decorator to change the User-Agent of the handshake
@@ -95,8 +93,9 @@ Foam::websocket::websocket
         }));
 
     // Perform the websocket handshake
-    ws_.handshake(addr_, "/");
+    ws_.handshake(addr_, endpoint);
 }
+
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
@@ -112,9 +111,9 @@ Foam::word Foam::websocket::read()
 
     ws_.read(buffer);
 
-    word answer = boost::beast::buffers_to_string(buffer.data());
+    word response = boost::beast::buffers_to_string(buffer.data());
 
-    return answer;
+    return response;
 }
 
 

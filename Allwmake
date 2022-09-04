@@ -7,4 +7,5 @@
 wmake application/test/test-dataLayer
 wmake application/test/test-json
 wmake application/test/test-zmq
+wmake application/test/test-pythonNumpy
 

@@ -1,11 +1,18 @@
 #!/bin/bash
 
-function pylib {
+
+function pyver {
     PY_VNUMBER="$(python --version | cut -d " " -f 2)"
     PY_MAJOR=$(echo $PY_VNUMBER  | cut -d "." -f 1)
     PY_MINOR=$(echo $PY_VNUMBER | cut -d "." -f 2)
-    PYVERSION="-lpython$PY_MAJOR.$PY_MINOR"
-    echo $PYVERSION
+    PYVERSION="$PY_MAJOR.$PY_MINOR"
+    echo -e $PYVERSION
+}
+
+function pylib {
+    py_version=$(pyver)
+    PYVERSION="-lpython$py_version"
+    echo -e $PYVERSION
 }
 
 function pyincludes {
@@ -14,6 +21,17 @@ function pyincludes {
     includes="PY_INCS := \ \n
         -Wno-old-style-cast \ \n""$PYINC"
         
+    echo -e $includes
+}
+
+function pyincludeswithNumpy {
+    PYINC=$(python3-config --includes | sed 's/ / \\ \\n/g')
+    py_version=$(pyver)
+    PYPREFIX=$(python3-config --prefix)
+    includes="PY_INCS := \ \n
+        -Wno-old-style-cast \ \n""$PYINC"
+    includes="$includes \ \n-I$PYPREFIX/lib/python$py_version/site-packages/numpy/core/include" 
+      
     echo -e $includes
 }
 

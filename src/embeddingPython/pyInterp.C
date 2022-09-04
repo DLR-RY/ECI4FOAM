@@ -43,7 +43,7 @@ Foam::pyInterp::pyInterp(const Time& time)
     ),
     interp_()
 {
-    py::print("Starting Python Interpreter"); // use the Python API
+    Info << "Starting Python Interpreter" << endl;; // use the Python API
 }
 
 Foam::pyInterp& Foam::pyInterp::New(const Time& time)

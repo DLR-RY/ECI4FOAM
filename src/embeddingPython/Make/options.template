@@ -1,14 +1,14 @@
 PY_INCS := \ 
  -Wno-old-style-cast \ 
--I/media/henning/ssd1linux/miniconda3/envs/py39/include/python3.9 \ 
--I/media/henning/ssd1linux/miniconda3/envs/py39/include/python3.9
+-I/media/henning/ssd1linux/miniconda3/envs/omsim-py310/include/python3.10 \ 
+-I/media/henning/ssd1linux/miniconda3/envs/omsim-py310/include/python3.10
 
 
 PY_LIBS := \ 
--L/media/henning/ssd1linux/miniconda3/envs/py39/lib/python3.9/config-3.9-x86_64-linux-gnu \ 
--L/media/henning/ssd1linux/miniconda3/envs/py39/lib \ 
--Wl,-rpath=/media/henning/ssd1linux/miniconda3/envs/py39/lib \ 
--lpython3.9
+-L/media/henning/ssd1linux/miniconda3/envs/omsim-py310/lib/python3.10/config-3.10-x86_64-linux-gnu \ 
+-L/media/henning/ssd1linux/miniconda3/envs/omsim-py310/lib \ 
+-Wl,-rpath=/media/henning/ssd1linux/miniconda3/envs/omsim-py310/lib \ 
+-lpython3.10
 
 
 CONAN_INCS := \

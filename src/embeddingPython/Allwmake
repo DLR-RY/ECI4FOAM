@@ -4,7 +4,7 @@ cd "${0%/*}" || exit                                # Run from this directory
 
 source ../../scripts/pyInstall.sh
 
-pyincludes > Make/options.template
+pyincludeswithNumpy > Make/options.template
 echo -e "\n" >> Make/options.template
 pylibs -rpath >> Make/options.template
 echo -e "\n" >> Make/options.template

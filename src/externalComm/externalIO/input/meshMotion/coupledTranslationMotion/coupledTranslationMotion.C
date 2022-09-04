@@ -81,9 +81,8 @@ Foam::solidBodyMotionFunctions::coupledTranslationMotion::transformation() const
         data.getObj<vector>(posName_,commDataLayer::causality::in);
 
     displacement -= relative_;
-    Info << "displacement " << displacement << endl;
     quaternion R(1);
-    septernion TR(septernion(displacement)*R);
+    septernion TR(septernion(-displacement)*R);
 
     DebugInFunction << "Time = " << t << " transformation: " << TR << endl;
 

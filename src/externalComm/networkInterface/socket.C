@@ -31,40 +31,44 @@ Foam::socket::socket
     const dictionary& dict
 )
 :
-    dict_(dict),
     ioc_(),
     resolver_(ioc_),
     sock_(ioc_),
     addr_()
 {
     // The io_context is required for all I/O
-    word host = dict_.get<word>("host");
-    label port = dict_.get<label>("port");
+    word host = dict.get<word>("host");
+    label port = dict.get<label>("port");
 
-    // Look up the domain name
-    // auto const results = resolver_.resolve(host, port);
-
-    // Make the connection on the IP address we get from a lookup
-    // net::connect(socket, results.begin(), results.end());
-
-    // Update the host_ string. This will provide the value of the
-    // Host HTTP header during the WebSocket handshake.
-    // See https://tools.ietf.org/html/rfc7230#section-5.4
-    
-    // addr_ = host + ':' + word(port); //std::to_string(ep.port());
     tcp::endpoint endpoint(
     boost::asio::ip::address::from_string(host), port);
-// socket.connect(endpoint);
+
     sock_.connect(endpoint);
 
+}
 
+Foam::socket::socket
+(
+    word host,
+    label port
+)
+:
+    ioc_(),
+    resolver_(ioc_),
+    sock_(ioc_),
+    addr_()
+{
+    tcp::endpoint endpoint(
+    boost::asio::ip::address::from_string(host), port);
+
+    sock_.connect(endpoint);
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 Foam::socket::~socket()
 {
-    sock_.close();//beast::socket::close_code::normal);
+    sock_.close();
 }
 
 

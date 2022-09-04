@@ -1,4 +1,4 @@
-# ECI4FOAM
+# ECI4I4FOAM
 
 External Coupling Interface 4 FOAM ECI4FOAM provides an interface for coupling external tools and software to OpenFOAM
 
