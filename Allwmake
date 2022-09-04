@@ -1,6 +1,5 @@
 #!/bin/bash
 
-./src/testing/Allwmake
 ./src/externalComm/Allwmake
 ./src/embeddingPython/Allwmake
 
