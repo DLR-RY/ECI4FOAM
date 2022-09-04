@@ -11,7 +11,7 @@ External Coupling Interface 4 FOAM ECI4FOAM provides an interface for coupling e
 requires OpenFOAM of2012 or higher sourced and installed and python 3.7+ (conda is highly recommended) 
 
 ```
-./build-ECI4FOAM.sh
+./build-ECI4FOAM.sh # will install conan zmq oftest
 ```
 ## Testsuite
 
