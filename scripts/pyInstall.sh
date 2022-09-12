@@ -35,6 +35,14 @@ function pyincludeswithNumpy {
     echo -e $includes
 }
 
+function pybind11_includes {
+    PYINC=$(python3 -m pybind11 --includes) 
+    includes="PY_INCS := \ \n
+        -Wno-old-style-cast \ \n""$PYINC"
+      
+    echo -e $includes
+}
+
 function copyPythonIncs {
     incs=$(python3-config --includes)
     for inc in $incs

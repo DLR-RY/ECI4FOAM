@@ -1,0 +1,12 @@
+PY_INCS := \ 
+ -Wno-old-style-cast \ 
+-I/media/henning/ssd1linux/miniconda3/envs/py_inter_foam/include/python3.10 -I/media/henning/ssd1linux/miniconda3/envs/py_inter_foam/lib/python3.10/site-packages/pybind11/include
+
+
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    $(PY_INCS) \
+
+LIB_LIBS = \
+    -lfiniteVolume \
+

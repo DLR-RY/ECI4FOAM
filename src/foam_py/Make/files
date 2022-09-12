@@ -1,0 +1,5 @@
+src/py_dict.C
+src/py_mesh.C
+src/foam_py.C
+
+LIB = foam_py_core
