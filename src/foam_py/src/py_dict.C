@@ -26,6 +26,8 @@ License
 #include "tokenList.H"
 #include <vector>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+
 
 
 class Dict {

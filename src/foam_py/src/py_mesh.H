@@ -33,7 +33,58 @@ SourceFiles
 
 // System includes
 #include <pybind11/pybind11.h>
+#include "fvMesh.H"
+#include "polyMesh.H"
+#include <vector>
+#include <pybind11/stl.h>
+// #include "py_geo_fields.H"
 
+
+
+namespace Foam
+{
+// template<class Type>
+// class volField<Type>;
+
+class FvMesh {
+    private:
+        Time time_;
+        fvMesh mesh_;
+
+
+    public:
+
+        FvMesh()
+        :
+            time_(".","."),
+            mesh_
+            (
+                IOobject
+                (
+                    "region0",
+                    time_.timeName(),
+                    time_,
+                    IOobject::MUST_READ
+                ),
+                false
+            )
+        {
+            mesh_.init(true);   // Initialise all (lower levels and current)
+        }
+
+        const Time& time() const
+        {
+            return time_;
+        }
+
+        const fvMesh& mesh() const
+        {
+            return mesh_;
+        }
+ 
+};
+
+}
 
 
 void  AddPyMesh(pybind11::module& m);

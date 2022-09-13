@@ -18,78 +18,126 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "py_geo_fields.H"
-#include <vector>
-#include <pybind11/stl.h>
+#include <type_traits>
 
+namespace Foam
+{
 
-class Dict {
-    private:
-        Foam::dictionary dict_;
+template<typename Type>
+pybind11::array_t<scalar> Foam::FieldToNumpy(const Field<Type>& values)
+{
+    label nElements = values.size();
+    label nComps = pTraits<Type>::nComponents;
 
+    pybind11::array_t<scalar, pybind11::array::c_style> arr({nElements, nComps});
+    auto ra = arr.mutable_unchecked();
 
-    public:
-    Dict(const std::string &file_name)
-    :
-    dict_()
+    forAll(values,celli)
     {
-        Foam::autoPtr<Foam::IFstream> dictFile(new Foam::IFstream(file_name));
-        dict_ = Foam::dictionary(dictFile(), true);
-    }
-
-    std::vector<std::string> toc()
-    {
-        std::vector<std::string> content = {};
-        for (const Foam::word& w: dict_.toc())
+        for (label i = 0; i < pTraits<Type>::nComponents; ++i)
         {
-            content.push_back(w);
+            ra(celli, i) = values[celli].component(i);
         }
-        return content;
     }
 
-    std::string value(std::string scopedName)
+    return arr;
+}
+
+template< >
+pybind11::array_t<scalar> FieldToNumpy<scalar>(const Field<scalar>& values)
+{
+    label nElements = values.size();
+
+    pybind11::array_t<scalar, pybind11::array::c_style> arr(nElements);
+    auto ra = arr.mutable_unchecked();
+
+    forAll(values,celli)
     {
-
-        // const auto finder = dict_.csearchScoped(scopedName, Foam::keyType::REGEX);
-
-        // if (!finder.found())
-        // {
-        //     FatalIOErrorInFunction(dict_.name())
-        //         << "Cannot find entry " << scopedName
-        //         << exit(Foam::FatalIOError, 2);
-        // }
-
-        // if (finder.isDict())
-        // {
-        //     Foam::Info << finder.dict();
-        // }
-        // else if (finder.ref().isStream())
-        // {
-        //     const Foam::tokenList& tokens = finder.ref().stream();
-        //     Foam::IStringStream istr();
-        //     forAll(tokens, i)
-        //     {
-        //         Foam::Info<< tokens[i];
-        //         if (i < tokens.size() - 1)
-        //         {
-        //             Foam::Info<< Foam::token::SPACE;
-        //         }
-        //     }
-        //     Foam::Info << Foam::endl;
-        //     // return istr.str();
-        //     return std::string("asdasdasd");
-        // }
-        return std::string("asdasdasd");
-    
+        ra(celli) = values[celli];
     }
-};
+
+    return arr;
+}
 
 
-void AddPyDict(pybind11::module& m)
+template<typename Type>
+void NumpyToField(Field<Type>& values,const pybind11::array_t<scalar> np_arr)
+{
+    label nComps = pTraits<Type>::nComponents;
+    label nElements = values.size();
+
+    if (np_arr.shape(1) != nComps)
+    {
+        FatalErrorInFunction
+            << "dimensions do not match " << nl
+            << "the expected value: " << nComps << nl
+            << "the provided value: " << np_arr.shape(1) << nl
+            << exit(FatalError);
+    }
+
+    if (np_arr.shape(0) != nElements)
+    {
+        FatalErrorInFunction
+            << "length of numpy array does not match " << nl
+            << "the expected value: " << nElements<< nl
+            << "the provided value: " << np_arr.size() << nl
+            << exit(FatalError);
+    }
+    const auto ra = np_arr.unchecked();
+
+    forAll(values,celli)
+    {
+        for (label i = 0; i < pTraits<Type>::nComponents; ++i)
+        {
+            values[celli].component(i) = ra(celli, i); 
+        }
+    }
+}
+
+template<>
+void NumpyToField<scalar>(Field<scalar>& values,const pybind11::array_t<scalar> np_arr)
+{
+    if (np_arr.ndim() != 1)
+    {
+        FatalErrorInFunction
+            << "numpy array is not onedimensional " << nl
+            << "provided array has ndims : " << np_arr.ndim() << nl
+            << exit(FatalError);
+    }
+
+    if (np_arr.size() != values.size())
+    {
+        FatalErrorInFunction
+            << "length of numpy array does not match " << nl
+            << "the expected value: " << values.size()<< nl
+            << "the provided value: " << np_arr.size() << nl
+            << exit(FatalError);
+    }
+
+    const auto ra = np_arr.unchecked();
+
+    forAll(values,celli)
+    {
+        values[celli] = ra(celli); 
+    }
+}
+
+}
+void AddPyGeoFields(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<Dict>(m, "dictionary")
-        .def(py::init<const std::string &>())
-        .def("toc", &Dict::toc)
-        .def("value", &Dict::value);
+    py::class_<Foam::VolField<Foam::scalar>>(m, "volScalarField")
+    .def(py::init<const std::string&,const Foam::FvMesh&>())
+    .def_property("internalField", &Foam::VolField<Foam::scalar>::internalField, &Foam::VolField<Foam::scalar>::setInternalField)
+    .def("bField", &Foam::VolField<Foam::scalar>::bField)
+    .def("bField", &Foam::VolField<Foam::scalar>::setBField)
+    ;
+
+    py::class_<Foam::VolField<Foam::vector>>(m, "volVectorField")
+    .def(py::init<const std::string&,const Foam::FvMesh&>())
+    .def_property("internalField", &Foam::VolField<Foam::vector>::internalField, &Foam::VolField<Foam::vector>::setInternalField)
+    .def("bField", &Foam::VolField<Foam::vector>::bField)
+    .def("bField", &Foam::VolField<Foam::vector>::setBField)
+    ;
 }

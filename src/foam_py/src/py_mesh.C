@@ -17,61 +17,16 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "py_dict.H"
-#include "fvMesh.H"
-#include "polyMesh.H"
-#include <vector>
-#include <pybind11/stl.h>
-
-
-
-
-class FoamMesh {
-    private:
-        Foam::Time time_;
-        Foam::fvMesh mesh_;
-
-
-    public:
-
-        FoamMesh()
-        :
-            time_(".","."),
-            mesh_
-            (
-                Foam::IOobject
-                (
-                    "region0",
-                    time_.timeName(),
-                    time_,
-                    Foam::IOobject::MUST_READ
-                ),
-                false
-            )
-        {
-            mesh_.init(true);   // Initialise all (lower levels and current)
-        }
-
-        double time()
-        {
-            return mesh_.time().timeOutputValue();
-        }
-
-        // void time(double t)
-        // {
-        //     return mesh_.time().set();
-        // }
-    
-};
+#include "py_mesh.H"
 
 
 void AddPyMesh(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<FoamMesh>(m, "FoamMesh")
+    py::class_<Foam::FvMesh>(m, "FvMesh")
         .def(py::init<>())
-        .def("time", &FoamMesh::time)
-        // .def("value", &Dict::value)
+        // .def("time", &Foam::FvMesh::time)
+        // .def("mesh", &Foam::FvMesh::mesh)
         ;
 }
