@@ -18,7 +18,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "py_geo_fields.H"
-#include <type_traits>
 
 namespace Foam
 {
@@ -152,6 +151,9 @@ void AddPyGeoFields(pybind11::module& m)
             vf.setBField(name,np_arr);
         }
     })
+    .def("__add__",[](Foam::VolField<Foam::scalar>& self, const Foam::VolField<Foam::scalar>& vf) {
+        return Foam::VolField<Foam::scalar>(self + vf);
+    })
 
     ;
 
@@ -160,7 +162,7 @@ void AddPyGeoFields(pybind11::module& m)
     .def_property("internalField", &Foam::VolField<Foam::vector>::internalField, &Foam::VolField<Foam::vector>::setInternalField)
     .def("bField", &Foam::VolField<Foam::vector>::bField)
     .def("bField", &Foam::VolField<Foam::vector>::setBField)
-    .def("__getitem__", [](const Foam::VolField<Foam::scalar>& vf, const std::string& name) {
+    .def("__getitem__", [](const Foam::VolField<Foam::vector>& vf, const std::string& name) {
         if (name == "internalField")
         {
             return vf.internalField();
@@ -170,7 +172,7 @@ void AddPyGeoFields(pybind11::module& m)
             return vf.bField(name);
         }
     })
-    .def("__setitem__", [](Foam::VolField<Foam::scalar>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
+    .def("__setitem__", [](Foam::VolField<Foam::vector>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
         if (name == "internalField")
         {
             vf.setInternalField(np_arr);

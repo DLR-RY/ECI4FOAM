@@ -66,18 +66,31 @@ class VolField
     
 
     public:
-    // VolField<Type>
-    // (
-    //     const GeometricField<Type, fvPatchField, volMesh>& vlf
-    // )
-    // :
-    //     GeometricField<Type, fvPatchField, volMesh>
-    // (
-    //     vlf
-    // )
-    // {
-    //     // Info << "internalField " << this->internalField() << endl;
-    // }
+    VolField<Type>
+    (
+        const tmp< GeometricField< Type, fvPatchField, volMesh > > &tgf
+    )
+    :
+        GeometricField<Type, fvPatchField, volMesh>
+    (
+        tgf
+    )
+    {
+
+    }
+
+    VolField<Type>
+    (
+        const GeometricField<Type, fvPatchField, volMesh>& vlf
+    )
+    :
+        GeometricField<Type, fvPatchField, volMesh>
+    (
+        vlf
+    )
+    {
+        
+    }
     VolField<Type>
     (
         const std::string& name,
