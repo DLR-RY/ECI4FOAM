@@ -132,6 +132,27 @@ void AddPyGeoFields(pybind11::module& m)
     .def_property("internalField", &Foam::VolField<Foam::scalar>::internalField, &Foam::VolField<Foam::scalar>::setInternalField)
     .def("bField", &Foam::VolField<Foam::scalar>::bField)
     .def("bField", &Foam::VolField<Foam::scalar>::setBField)
+    .def("__getitem__", [](const Foam::VolField<Foam::scalar>& vf, const std::string& name) {
+        if (name == "internalField")
+        {
+            return vf.internalField();
+        }
+        else
+        {
+            return vf.bField(name);
+        }
+    })
+    .def("__setitem__", [](Foam::VolField<Foam::scalar>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
+        if (name == "internalField")
+        {
+            vf.setInternalField(np_arr);
+        }
+        else
+        {
+            vf.setBField(name,np_arr);
+        }
+    })
+
     ;
 
     py::class_<Foam::VolField<Foam::vector>>(m, "volVectorField")
@@ -139,5 +160,25 @@ void AddPyGeoFields(pybind11::module& m)
     .def_property("internalField", &Foam::VolField<Foam::vector>::internalField, &Foam::VolField<Foam::vector>::setInternalField)
     .def("bField", &Foam::VolField<Foam::vector>::bField)
     .def("bField", &Foam::VolField<Foam::vector>::setBField)
+    .def("__getitem__", [](const Foam::VolField<Foam::scalar>& vf, const std::string& name) {
+        if (name == "internalField")
+        {
+            return vf.internalField();
+        }
+        else
+        {
+            return vf.bField(name);
+        }
+    })
+    .def("__setitem__", [](Foam::VolField<Foam::scalar>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
+        if (name == "internalField")
+        {
+            vf.setInternalField(np_arr);
+        }
+        else
+        {
+            vf.setBField(name,np_arr);
+        }
+    })
     ;
 }

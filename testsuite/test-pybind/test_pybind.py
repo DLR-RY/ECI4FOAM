@@ -24,20 +24,18 @@ def test_volScalarField(change_test_dir):
     mesh = foam_py.FvMesh()
 
     p_rgh = foam_py.volScalarField("p_rgh",mesh)
-    assert sum(p_rgh.internalField) == 0
-    p_rgh.internalField += 1
-    assert sum(p_rgh.internalField) == p_rgh.internalField.size
+    assert sum(p_rgh["internalField"]) == 0
+    p_rgh["internalField"] += 1
+    assert sum(p_rgh["internalField"]) == p_rgh.internalField.size
 
-    assert sum(p_rgh.bField("leftWall")) == 0
-    test = p_rgh.bField("leftWall")
-    test += 1
-    p_rgh.bField("leftWall",test)
-    assert sum(p_rgh.bField("leftWall")) == p_rgh.bField("leftWall").size
+    assert sum(p_rgh["leftWall"]) == 0
+    p_rgh["leftWall"] += 1
+    assert sum(p_rgh["leftWall"]) == p_rgh.bField("leftWall").size
 
     U = foam_py.volScalarField("U",mesh)
-    assert sum(U.internalField) == 0
-    U.internalField += [1,2,3]
-    assert sum(U.internalField) == U.internalField.size*2
+    assert sum(p_rgh["internalField"]) == 0
+    p_rgh["internalField"] += [1,2,3]
+    assert sum(p_rgh["internalField"]) == p_rgh["internalField"].size*2
 
 
 

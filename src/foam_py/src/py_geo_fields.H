@@ -124,9 +124,9 @@ class VolField
 
 
     // template<class Type>
-    pybind11::array_t<scalar> internalField()
+    pybind11::array_t<scalar> internalField() const
     {
-        const Field<Type>& values = this->primitiveFieldRef();
+        const Field<Type>& values = this->primitiveField();
         return FieldToNumpy<Type>(values);
     }
 
@@ -137,7 +137,7 @@ class VolField
         NumpyToField(values,np_arr);
     }
 
-    pybind11::array_t<scalar> bField(std::string patchName)
+    pybind11::array_t<scalar> bField(std::string patchName) const
     {
         label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
         if (patchId == -1)
@@ -148,8 +148,6 @@ class VolField
         }
         const auto& bField = this->boundaryField()[patchId];
         return FieldToNumpy<Type>(bField); 
-        // const Field<Type>& values = this->primitiveFieldRef();
-        // return FieldToNumpy<Type>(values);
     }
 
     void setBField(std::string patchName,const pybind11::array_t<scalar> np_arr)
