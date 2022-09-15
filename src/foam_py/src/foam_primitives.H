@@ -28,29 +28,76 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef py_mesh
-#define py_mesh
+#ifndef foam_primitive
+#define foam_primitive
 
 // System includes
 #include <pybind11/pybind11.h>
-#include "fvMesh.H"
-#include "Time.H"
-#include "polyMesh.H"
-#include <vector>
 #include <pybind11/stl.h>
-#include <memory>
+#include "word.H"
+#include "scalar.H"
+#include "vector.H"
+#include "tensor.H"
 
 namespace Foam
 {
 
-    Time* createTime(std::string rootPath = ".",std::string caseName= ".");
+// arthemtic operators
+template<class Type>
+Type add(const Type& t1, const Type& t2) {
+    return t1 + t2;
+}
 
-    fvMesh* createMesh(const Time& time);
+template<class Type>
+Type subtract(const Type& t1, const Type& t2) {
+    return t1 - t2;
+}
+
+template<class Type>
+Type multiply(const Type& t1, const Type& t2) {
+    return t1 * t2;
+}
+
+template<class Type>
+Type divide(const Type& t1, const Type& t2) {
+    return t1 / t2;
+}
+
+template<class Type>
+Type multiply_scalar(const Type& t1, const scalar& s) {
+    return t1 * s;
+}
+
+template<class Type>
+scalar inner_product(const Type& t1, const Type& t2) {
+    return t1 & t2;
+}
+
+template<class Type>
+bool is_equal(const Type& t1, const Type& t2) {
+    return t1 == t2;
+}
+
+template<class Type>
+bool is_notequal(const Type& t1, const Type& t2) {
+    return t1 != t2;
+}
+
+
+
+// comparision operators
+template<class Type>
+bool is_equal(const Type& t1, const Type& t2);
+
+template<class Type>
+bool is_notequal(const Type& t1, const Type& t2);
+
+
 
 }
 
 
-void  AddPyMesh(pybind11::module& m);
+void  AddFoamPrimitives(pybind11::module& m);
 
 
 #endif // py_dict  defined 

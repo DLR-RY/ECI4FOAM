@@ -18,15 +18,56 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "py_mesh.H"
+#include "volFields.H"
 
+namespace Foam
+{
+
+Time* createTime(std::string rootPath,std::string caseName)
+{
+    return new Time(rootPath,caseName);
+}
+
+fvMesh* createMesh(const Time& time)
+{
+    fvMesh* mesh( 
+        new fvMesh
+        (
+            IOobject
+            (
+                "region0",
+                time.timeName(),
+                time,
+                IOobject::MUST_READ
+            ),
+            false
+        )
+    );
+    mesh->init(true);
+    return mesh;
+}
+
+}
 
 void AddPyMesh(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<Foam::FvMesh>(m, "FvMesh")
-        .def(py::init<>())
-        // .def("time", &Foam::FvMesh::time)
-        // .def("mesh", &Foam::FvMesh::mesh)
-        ;
+
+
+    // py::class_<Foam::autoPtr<Foam::Time>>(m, "ptr_Time")
+    // .def("ref",[](Foam::autoPtr<Foam::Time> self){return self.ptr();}, py::return_value_policy::reference)
+    // ;
+    
+    py::class_<Foam::Time>(m, "Time")
+    .def(py::init(&Foam::createTime),py::return_value_policy::take_ownership)
+    ;
+
+    
+    py::class_<Foam::fvMesh>(m, "fvMesh")
+    .def(py::init(&Foam::createMesh),py::return_value_policy::take_ownership)
+    .def("C",&Foam::fvMesh::C,py::return_value_policy::reference)
+    // .def("Cf",&Foam::fvMesh::Cf,py::return_value_policy::reference)
+    ;
+
 }

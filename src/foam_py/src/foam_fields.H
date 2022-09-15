@@ -28,29 +28,43 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef py_mesh
-#define py_mesh
+#ifndef foam_fields
+#define foam_fields
 
 // System includes
 #include <pybind11/pybind11.h>
-#include "fvMesh.H"
-#include "Time.H"
-#include "polyMesh.H"
-#include <vector>
+#include "Field.H"
+#include "scalar.H"
 #include <pybind11/stl.h>
-#include <memory>
+#include <pybind11/numpy.h>
+
+
+namespace py = pybind11;
 
 namespace Foam
 {
 
-    Time* createTime(std::string rootPath = ".",std::string caseName= ".");
 
-    fvMesh* createMesh(const Time& time);
+template<typename Type>
+py::array_t<scalar> toNumpy(const Field<Type>& values);
+
+template< >
+py::array_t<scalar> toNumpy<scalar>(const Field<scalar>& values);
+
+
+template<typename Type>
+void fromNumpy(Field<Type>& values,const py::array_t<scalar> np_arr);
+
+template<>
+void fromNumpy<scalar>(Field<scalar>& values,const py::array_t<scalar> np_arr);
+
+template<class Type>
+py::class_< Field<Type>> declare_fields(py::module &m, std::string &className);
 
 }
 
 
-void  AddPyMesh(pybind11::module& m);
+void  AddFoamFields(py::module& m);
 
 
 #endif // py_dict  defined 

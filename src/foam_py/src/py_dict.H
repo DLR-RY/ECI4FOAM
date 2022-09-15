@@ -33,8 +33,27 @@ SourceFiles
 
 // System includes
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/numpy.h>
+
+#include "dictionary.H"
+#include "word.H"
+#include "tensor.H"
+#include "vector.H"
+#include "autoPtr.H"
+#include "IFstream.H"
+#include "Field.H"
+
+namespace Foam
+{
+    
+dictionary read_dictionary(const std::string& file_name);
+
+template<class Type>
+Type getFromDict(dictionary& dict, const std::string key);
 
 
+}
 
 void  AddPyDict(pybind11::module& m);
 

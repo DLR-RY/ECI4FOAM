@@ -40,12 +40,14 @@ SourceFiles
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-// namespace py = pybind11;
+namespace py = pybind11;
 
 namespace Foam
 {
+    
 template <class Type>
 using VolField = GeometricField<Type, fvPatchField, volMesh>;
+
 
 template<class Type>
 VolField<Type> read_volField
@@ -54,17 +56,32 @@ VolField<Type> read_volField
     const fvMesh& mesh
 );
 
+
 template<typename Type>
 pybind11::array_t<scalar> FieldToNumpy(const Field<Type>& values);
+
 
 template< >
 pybind11::array_t<scalar> FieldToNumpy<scalar>(const Field<scalar>& values);
 
+
 template<typename Type>
 void NumpyToField(Field<Type>& values,const pybind11::array_t<scalar> np_arr);
 
+
 template<>
 void NumpyToField<scalar>(Field<scalar>& values,const pybind11::array_t<scalar> np_arr);
+
+
+template<class Type>
+const Field<Type>& field(const VolField<Type>& vf,const fvMesh& mesh, const std::string& name);
+
+
+template<class Type>
+void field(VolField<Type>& vf,const fvMesh& mesh, const std::string& name,const Field<Type>& f);
+
+template<class Type>
+py::class_< VolField<Type>> declare_geofields(py::module &m, std::string &className);
 
 // template<class Type>
 // class VolField

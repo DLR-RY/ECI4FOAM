@@ -18,16 +18,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "py_dict.H"
-#include "dictionary.H"
-#include "word.H"
-#include "autoPtr.H"
-#include "IFstream.H"
-#include "IStringStream.H"
-#include "tokenList.H"
-#include <vector>
-#include <pybind11/stl.h>
-#include <pybind11/numpy.h>
-
 
 
 class Dict {
@@ -91,13 +81,43 @@ class Dict {
     }
 };
 
+namespace Foam
+{
+
+    dictionary read_dictionary
+    (
+        const std::string& file_name
+    )
+    {
+        autoPtr<IFstream> dictFile(new IFstream(file_name));
+        return dictionary(dictFile(), true);
+    }
+
+    template<class Type>
+    Type getFromDict(dictionary& dict, const std::string key)
+    {
+        return dict.get<Type>(word(key));
+    }
+
+}
+
 
 void AddPyDict(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<Dict>(m, "dictionary")
-        .def(py::init<const std::string &>())
-        .def("toc", &Dict::toc)
-        .def("value", &Dict::value);
+    py::class_<Foam::dictionary>(m, "dictionary")
+        .def(py::init([](const std::string name) {
+            return Foam::read_dictionary(name);
+        }))
+        .def("toc", &Foam::dictionary::toc)
+        .def("get_word", &Foam::getFromDict<Foam::word>)
+        .def("get_scalar", &Foam::getFromDict<Foam::scalar>)
+        .def("get_vector", &Foam::getFromDict<Foam::vector>)
+        .def("get_tensor", &Foam::getFromDict<Foam::tensor>)
+        .def("get_wordList", &Foam::getFromDict<Foam::List<Foam::word>>)
+        .def("get_scalarField", &Foam::getFromDict<Foam::Field<Foam::scalar>>)
+        .def("get_vectorField", &Foam::getFromDict<Foam::Field<Foam::vector>>)
+        .def("get_tensorField", &Foam::getFromDict<Foam::Field<Foam::tensor>>)
+        ;
 }
