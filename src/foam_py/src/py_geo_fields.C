@@ -121,66 +121,94 @@ void NumpyToField<scalar>(Field<scalar>& values,const pybind11::array_t<scalar> 
     }
 }
 
+template<class Type>
+VolField<Type> read_volField
+(
+    const std::string& name,
+    const fvMesh& mesh
+)
+{
+    return GeometricField<Type, fvPatchField, volMesh>
+    (
+        IOobject
+        (
+            name,
+            mesh.time().timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
 }
+}
+
+
 void AddPyGeoFields(pybind11::module& m)
 {
     namespace py = pybind11;
 
     py::class_<Foam::VolField<Foam::scalar>>(m, "volScalarField")
-    .def(py::init<const std::string&,const Foam::FvMesh&>())
-    .def_property("internalField", &Foam::VolField<Foam::scalar>::internalField, &Foam::VolField<Foam::scalar>::setInternalField)
-    .def("bField", &Foam::VolField<Foam::scalar>::bField)
-    .def("bField", &Foam::VolField<Foam::scalar>::setBField)
-    .def("__getitem__", [](const Foam::VolField<Foam::scalar>& vf, const std::string& name) {
-        if (name == "internalField")
-        {
-            return vf.internalField();
-        }
-        else
-        {
-            return vf.bField(name);
-        }
+    .def(py::init([](const std::string& name,const Foam::fvMesh& mesh) {
+        return Foam::read_volField<Foam::scalar>(name,mesh);
+    }))
+    .def("internalField", [](const Foam::VolField<Foam::scalar>& vf, const std::string& name) {
+        // const Field<Foam::scalar>& values = this->primitiveField();
+        return Foam::FieldToNumpy<Foam::scalar>(vf.primitiveField());
     })
-    .def("__setitem__", [](Foam::VolField<Foam::scalar>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
-        if (name == "internalField")
-        {
-            vf.setInternalField(np_arr);
-        }
-        else
-        {
-            vf.setBField(name,np_arr);
-        }
-    })
-    .def("__add__",[](Foam::VolField<Foam::scalar>& self, const Foam::VolField<Foam::scalar>& vf) {
-        return Foam::VolField<Foam::scalar>(self + vf);
-    })
+    
+    // .def("bField", &Foam::VolField<Foam::scalar>::bField)
+    // .def("bField", &Foam::VolField<Foam::scalar>::setBField)
+    // .def("__getitem__", [](const Foam::VolField<Foam::scalar>& vf, const std::string& name) {
+    //     if (name == "internalField")
+    //     {
+    //         return vf.internalField();
+    //     }
+    //     else
+    //     {
+    //         return vf.bField(name);
+    //     }
+    // })
+    // .def("__setitem__", [](Foam::VolField<Foam::scalar>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
+    //     if (name == "internalField")
+    //     {
+    //         vf.setInternalField(np_arr);
+    //     }
+    //     else
+    //     {
+    //         vf.setBField(name,np_arr);
+    //     }
+    // })
+    // .def("__add__",[](Foam::VolField<Foam::scalar>& self, const Foam::VolField<Foam::scalar>& vf) {
+    //     return Foam::VolField<Foam::scalar>(self + vf);
+    // })
 
     ;
 
-    py::class_<Foam::VolField<Foam::vector>>(m, "volVectorField")
-    .def(py::init<const std::string&,const Foam::FvMesh&>())
-    .def_property("internalField", &Foam::VolField<Foam::vector>::internalField, &Foam::VolField<Foam::vector>::setInternalField)
-    .def("bField", &Foam::VolField<Foam::vector>::bField)
-    .def("bField", &Foam::VolField<Foam::vector>::setBField)
-    .def("__getitem__", [](const Foam::VolField<Foam::vector>& vf, const std::string& name) {
-        if (name == "internalField")
-        {
-            return vf.internalField();
-        }
-        else
-        {
-            return vf.bField(name);
-        }
-    })
-    .def("__setitem__", [](Foam::VolField<Foam::vector>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
-        if (name == "internalField")
-        {
-            vf.setInternalField(np_arr);
-        }
-        else
-        {
-            vf.setBField(name,np_arr);
-        }
-    })
-    ;
+    // py::class_<Foam::VolField<Foam::vector>>(m, "volVectorField")
+    // .def(py::init<const std::string&,const Foam::FvMesh&>())
+    // .def_property("internalField", &Foam::VolField<Foam::vector>::internalField, &Foam::VolField<Foam::vector>::setInternalField)
+    // .def("bField", &Foam::VolField<Foam::vector>::bField)
+    // .def("bField", &Foam::VolField<Foam::vector>::setBField)
+    // .def("__getitem__", [](const Foam::VolField<Foam::vector>& vf, const std::string& name) {
+    //     if (name == "internalField")
+    //     {
+    //         return vf.internalField();
+    //     }
+    //     else
+    //     {
+    //         return vf.bField(name);
+    //     }
+    // })
+    // .def("__setitem__", [](Foam::VolField<Foam::vector>& vf, const std::string& name,const pybind11::array_t<Foam::scalar> np_arr) {
+    //     if (name == "internalField")
+    //     {
+    //         vf.setInternalField(np_arr);
+    //     }
+    //     else
+    //     {
+    //         vf.setBField(name,np_arr);
+    //     }
+    // })
+    // ;
 }

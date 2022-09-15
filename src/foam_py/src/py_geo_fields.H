@@ -44,7 +44,15 @@ SourceFiles
 
 namespace Foam
 {
+template <class Type>
+using VolField = GeometricField<Type, fvPatchField, volMesh>;
 
+template<class Type>
+VolField<Type> read_volField
+(
+    const std::string& name,
+    const fvMesh& mesh
+);
 
 template<typename Type>
 pybind11::array_t<scalar> FieldToNumpy(const Field<Type>& values);
@@ -58,124 +66,124 @@ void NumpyToField(Field<Type>& values,const pybind11::array_t<scalar> np_arr);
 template<>
 void NumpyToField<scalar>(Field<scalar>& values,const pybind11::array_t<scalar> np_arr);
 
-template<class Type>
-class VolField
-:
-    public GeometricField<Type, fvPatchField, volMesh>
-{
+// template<class Type>
+// class VolField
+// :
+//     public GeometricField<Type, fvPatchField, volMesh>
+// {
     
 
-    public:
-    VolField<Type>
-    (
-        const tmp< GeometricField< Type, fvPatchField, volMesh > > &tgf
-    )
-    :
-        GeometricField<Type, fvPatchField, volMesh>
-    (
-        tgf
-    )
-    {
+//     public:
+//     VolField<Type>
+//     (
+//         const tmp< GeometricField< Type, fvPatchField, volMesh > > &tgf
+//     )
+//     :
+//         GeometricField<Type, fvPatchField, volMesh>
+//     (
+//         tgf
+//     )
+//     {
 
-    }
+//     }
 
-    VolField<Type>
-    (
-        const GeometricField<Type, fvPatchField, volMesh>& vlf
-    )
-    :
-        GeometricField<Type, fvPatchField, volMesh>
-    (
-        vlf
-    )
-    {
+//     VolField<Type>
+//     (
+//         const GeometricField<Type, fvPatchField, volMesh>& vlf
+//     )
+//     :
+//         GeometricField<Type, fvPatchField, volMesh>
+//     (
+//         vlf
+//     )
+//     {
         
-    }
-    VolField<Type>
-    (
-        const std::string& name,
-        const fvMesh& mesh
-    )
-    :
-        GeometricField<Type, fvPatchField, volMesh>
-    (
-        IOobject
-        (
-            name,
-            mesh.time().timeName(),
-            mesh,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh
-    )
-    {
-        // Info << "internalField " << this->internalField() << endl;
-    }
+//     }
+//     VolField<Type>
+//     (
+//         const std::string& name,
+//         const fvMesh& mesh
+//     )
+//     :
+//         GeometricField<Type, fvPatchField, volMesh>
+//     (
+//         IOobject
+//         (
+//             name,
+//             mesh.time().timeName(),
+//             mesh,
+//             IOobject::MUST_READ,
+//             IOobject::AUTO_WRITE
+//         ),
+//         mesh
+//     )
+//     {
+//         // Info << "internalField " << this->internalField() << endl;
+//     }
 
-    VolField<Type>
-    (
-        const std::string& name,
-        const FvMesh& FvMesh
-    )
-    :
-        GeometricField<Type, fvPatchField, volMesh>
-    (
-        IOobject
-        (
-            name,
-            FvMesh.time().timeName(),
-            FvMesh.mesh(),
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        FvMesh.mesh()
-    )
-    {
-        // Info << "internalField " << this->internalField() << endl;
-    }
-
-
-    // template<class Type>
-    pybind11::array_t<scalar> internalField() const
-    {
-        const Field<Type>& values = this->primitiveField();
-        return FieldToNumpy<Type>(values);
-    }
+//     VolField<Type>
+//     (
+//         const std::string& name,
+//         const FvMesh& FvMesh
+//     )
+//     :
+//         GeometricField<Type, fvPatchField, volMesh>
+//     (
+//         IOobject
+//         (
+//             name,
+//             FvMesh.time().timeName(),
+//             FvMesh.mesh(),
+//             IOobject::MUST_READ,
+//             IOobject::AUTO_WRITE
+//         ),
+//         FvMesh.mesh()
+//     )
+//     {
+//         // Info << "internalField " << this->internalField() << endl;
+//     }
 
 
-    void setInternalField(const pybind11::array_t<scalar> np_arr)
-    {
-        auto& values = this->primitiveFieldRef();
-        NumpyToField(values,np_arr);
-    }
+//     // template<class Type>
+//     pybind11::array_t<scalar> internalField() const
+//     {
+//         const Field<Type>& values = this->primitiveField();
+//         return FieldToNumpy<Type>(values);
+//     }
 
-    pybind11::array_t<scalar> bField(std::string patchName) const
-    {
-        label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
-        if (patchId == -1)
-        {
-            FatalErrorInFunction
-                << "patch not found " << nl
-                << exit(FatalError);
-        }
-        const auto& bField = this->boundaryField()[patchId];
-        return FieldToNumpy<Type>(bField); 
-    }
 
-    void setBField(std::string patchName,const pybind11::array_t<scalar> np_arr)
-    {
-        label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
-        if (patchId == -1)
-        {
-            FatalErrorInFunction
-                << "patch not found " << nl
-                << exit(FatalError);
-        }
-        auto& bField = this->boundaryFieldRef()[patchId];
-        NumpyToField(bField,np_arr);
-    }
-};
+//     void setInternalField(const pybind11::array_t<scalar> np_arr)
+//     {
+//         auto& values = this->primitiveFieldRef();
+//         NumpyToField(values,np_arr);
+//     }
+
+//     pybind11::array_t<scalar> bField(std::string patchName) const
+//     {
+//         label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
+//         if (patchId == -1)
+//         {
+//             FatalErrorInFunction
+//                 << "patch not found " << nl
+//                 << exit(FatalError);
+//         }
+//         const auto& bField = this->boundaryField()[patchId];
+//         return FieldToNumpy<Type>(bField); 
+//     }
+
+//     void setBField(std::string patchName,const pybind11::array_t<scalar> np_arr)
+//     {
+//         label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
+//         if (patchId == -1)
+//         {
+//             FatalErrorInFunction
+//                 << "patch not found " << nl
+//                 << exit(FatalError);
+//         }
+//         auto& bField = this->boundaryFieldRef()[patchId];
+//         NumpyToField(bField,np_arr);
+//     }
+// };
 
 }
 
