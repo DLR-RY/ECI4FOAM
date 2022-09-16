@@ -74,12 +74,11 @@ void AddPyMesh(pybind11::module& m)
 
     m.def("selectTimes",&Foam::selectTimes);
 
-
     py::class_<Foam::Time>(m, "Time")
         .def(py::init(&Foam::createTime),py::return_value_policy::take_ownership)
+        .def("setTime",&Foam::Time::setTime)
     ;
 
-    
     py::class_<Foam::fvMesh>(m, "fvMesh")
         .def(py::init(&Foam::createMesh),py::return_value_policy::take_ownership)
         .def("C",&Foam::fvMesh::C,py::return_value_policy::reference)
