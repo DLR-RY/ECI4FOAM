@@ -45,3 +45,17 @@ def test_mesh(change_test_dir):
 
     C = mesh.C()
     print(C["internalField"].to_numpy())
+
+
+def test_mesh(change_test_dir):
+
+    time = foam_py.Time(".", ".")
+    times = foam_py.selectTimes(time,["test_mesh"])
+    print(times)
+    for t in times:
+        print(t)
+    # mesh = foam_py.fvMesh(time)
+
+
+    # C = mesh.C()
+    # print(C["internalField"].to_numpy())

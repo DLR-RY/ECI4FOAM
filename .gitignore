@@ -128,3 +128,10 @@ conaninfo.txt
 conan.lock
 graph_info.json
 conan_imports_manifest.txt
+
+#Python
+__pycache__
+*.egg-info
+.pytest_cache
+dist/
+build/

@@ -19,11 +19,16 @@ License
 
 #include "foam_primitives.H"
 
+#include "instant.H"
 
 
 void AddFoamPrimitives(pybind11::module& m)
 {
     namespace py = pybind11;
+
+    
+    py::class_<Foam::instant>(m, "instant");
+
 
     // primitive classes
     py::class_<Foam::word>(m, "Word")

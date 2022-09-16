@@ -20,8 +20,27 @@ License
 #include "py_mesh.H"
 #include "volFields.H"
 
+
 namespace Foam
 {
+
+Foam::instantList selectTimes
+( 
+    Time& runTime,
+    const std::vector<std::string>& args
+)
+{
+    int argc = args.size();
+    char ** argv = new char*[argc];
+    for(int i = 0; i < argc; i++)
+    {
+        argv[i] = new char[args[i].size() + 1];
+        strcpy(argv[i], args[i].c_str());
+    }
+    Foam::argList list_arg(argc, argv);
+    return Foam::timeSelector::select0(runTime, list_arg);
+}
+
 
 Time* createTime(std::string rootPath,std::string caseName)
 {
@@ -53,21 +72,18 @@ void AddPyMesh(pybind11::module& m)
 {
     namespace py = pybind11;
 
+    m.def("selectTimes",&Foam::selectTimes);
 
 
-    // py::class_<Foam::autoPtr<Foam::Time>>(m, "ptr_Time")
-    // .def("ref",[](Foam::autoPtr<Foam::Time> self){return self.ptr();}, py::return_value_policy::reference)
-    // ;
-    
     py::class_<Foam::Time>(m, "Time")
-    .def(py::init(&Foam::createTime),py::return_value_policy::take_ownership)
+        .def(py::init(&Foam::createTime),py::return_value_policy::take_ownership)
     ;
 
     
     py::class_<Foam::fvMesh>(m, "fvMesh")
-    .def(py::init(&Foam::createMesh),py::return_value_policy::take_ownership)
-    .def("C",&Foam::fvMesh::C,py::return_value_policy::reference)
-    // .def("Cf",&Foam::fvMesh::Cf,py::return_value_policy::reference)
+        .def(py::init(&Foam::createMesh),py::return_value_policy::take_ownership)
+        .def("C",&Foam::fvMesh::C,py::return_value_policy::reference)
+        // .def("Cf",&Foam::fvMesh::Cf,py::return_value_policy::reference)
     ;
 
 }

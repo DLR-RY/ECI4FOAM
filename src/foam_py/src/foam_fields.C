@@ -19,7 +19,8 @@ License
 
 #include "foam_fields.H"
 #include "foam_primitives.H"
-// #include "foam_primitives.C"
+#include "instantList.H"
+
 
 namespace py = pybind11;
 
@@ -165,6 +166,8 @@ py::class_< Foam::Field<Type>> declare_fields(py::module &m, std::string classNa
 
 void AddFoamFields(py::module& m)
 {
+    py::class_<Foam::instantList>(m, "instantList");
+
     py::class_<Foam::List<Foam::word>>(m, "wordList")
         .def(py::init<Foam::List<Foam::word> > ())
         .def(py::init([](std::vector<std::string> vec) {
