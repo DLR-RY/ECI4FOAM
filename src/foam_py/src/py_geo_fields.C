@@ -126,4 +126,19 @@ void AddPyGeoFields(py::module& m)
     auto vf = Foam::declare_fields<Foam::vector>(m, std::string("volVectorField"));
 
     auto tf = Foam::declare_fields<Foam::tensor>(m, std::string("volTensorField"));
+
+
+    // functions
+    m.def("mag", [](Foam::VolField<Foam::scalar> vf)
+    {
+        return Foam::VolField<Foam::scalar>(Foam::mag(vf));
+    });
+    m.def("mag", [](Foam::VolField<Foam::vector> vf)
+    {
+        return Foam::VolField<Foam::scalar>(Foam::mag(vf));
+    });
+    m.def("mag", [](Foam::VolField<Foam::tensor> vf)
+    {
+        return Foam::VolField<Foam::scalar>(Foam::mag(vf));
+    });
 }

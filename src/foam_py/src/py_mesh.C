@@ -76,7 +76,15 @@ void AddPyMesh(pybind11::module& m)
 
     py::class_<Foam::Time>(m, "Time")
         .def(py::init(&Foam::createTime),py::return_value_policy::take_ownership)
-        .def("setTime",&Foam::Time::setTime)
+        .def("setTime", []
+        (
+            Foam::Time& self,
+            const Foam::instant& inst,
+            const Foam::label newIndex
+        )
+        {
+            self.setTime(inst,newIndex);
+        })
     ;
 
     py::class_<Foam::fvMesh>(m, "fvMesh")
