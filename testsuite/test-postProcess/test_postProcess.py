@@ -24,6 +24,8 @@ def test_postProcess(change_test_dir):
 
         print(np.average(p_rgh["internalField"].to_numpy()))
 
+        print(foam_py.postProcess.compute_average("T",mesh))
+
         T = foam_py.volScalarField("T", mesh)
 
         print(np.average(T["internalField"].to_numpy()))
