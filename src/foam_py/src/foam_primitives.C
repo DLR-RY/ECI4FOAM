@@ -22,6 +22,53 @@ License
 #include "instant.H"
 
 
+namespace Foam
+{
+namespace py = pybind11;
+
+template<class Type>
+py::class_<Type> declare_vectorspace(py::module &m, std::string className) {
+    auto primitiveType = py::class_<Type>(m, className.c_str())
+        .def(py::init<Type>())
+        // .def("__eq__",[](Type& self, const std::array<Foam::scalar, 3>& v){
+        //     return self[0] == v[0] && self[1] == v[1] && self[2] == v[2];
+        // })
+        .def("__getitem__", [](const Type& self, const Foam::label idx) {
+            if (idx >= pTraits<Type>::nComponents || idx < 0)
+            {
+                throw py::index_error();
+            }
+            return self[idx];
+        })
+        .def("__setitem__", [](Type& self, const Foam::label idx,const Foam::scalar s) {
+            if (idx >= pTraits<Type>::nComponents || idx < 0)
+            {
+                throw py::index_error();
+            }
+            self[idx] = s;
+        })
+        .def("__str__", [](const Type& self)
+        {
+            std::string out;
+            for (label i = 1; i < pTraits<Type>::nComponents; ++i)
+            {
+                out += " " +  Foam::name(self[i]);
+            }
+            return out;
+        })
+        .def("__len__", [](Type& self) -> int {return pTraits<Type>::nComponents;})
+        .def("__add__", &Foam::add<Type>)
+        .def("__sub__", &Foam::subtract<Type>)
+        .def("__mul__", &Foam::multiply_scalar<Type>)
+        .def("__and__", &Foam::inner_product<Type>)
+        .def("__eq__", &Foam::is_equal<Type>)
+        .def("__ne__", &Foam::is_notequal<Type>)
+        ;
+    return primitiveType;
+}
+
+}
+
 void AddFoamPrimitives(pybind11::module& m)
 {
     namespace py = pybind11;

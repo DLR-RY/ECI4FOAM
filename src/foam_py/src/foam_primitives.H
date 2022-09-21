@@ -39,6 +39,8 @@ SourceFiles
 #include "vector.H"
 #include "tensor.H"
 
+namespace py = pybind11;
+
 namespace Foam
 {
 
@@ -92,12 +94,15 @@ bool is_equal(const Type& t1, const Type& t2);
 template<class Type>
 bool is_notequal(const Type& t1, const Type& t2);
 
+template<class Type>
+py::class_<Type> declare_vectorspace(py::module &m, std::string &className);
+
 
 
 }
 
 
-void  AddFoamPrimitives(pybind11::module& m);
+void  AddFoamPrimitives(py::module& m);
 
 
 #endif // foam_dict  defined 
