@@ -67,4 +67,4 @@ py::class_< Field<Type>> declare_fields(py::module &m, std::string &className);
 void  AddFoamFields(py::module& m);
 
 
-#endif // py_dict  defined 
+#endif // foam_dict  defined 

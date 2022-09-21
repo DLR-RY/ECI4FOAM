@@ -17,7 +17,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "py_mesh.H"
+#include "foam_mesh.H"
 #include "volFields.H"
 
 

@@ -18,11 +18,11 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include <pybind11/pybind11.h>
-#include "py_dict.H"
-#include "py_mesh.H"
+#include "foam_dict.H"
+#include "foam_mesh.H"
 #include "foam_primitives.H"
 #include "foam_fields.H"
-#include "py_geo_fields.H"
+#include "foam_geo_fields.H"
 
 namespace py = pybind11;
 

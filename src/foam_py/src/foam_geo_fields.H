@@ -28,13 +28,13 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef py_geo_fields
-#define py_geo_fields
+#ifndef foam_geo_fields
+#define foam_geo_fields
 
 // System includes
 #include <pybind11/pybind11.h>
 
-#include "py_mesh.H"
+#include "foam_mesh.H"
 #include "volFields.H"
 #include <vector>
 #include <pybind11/stl.h>
@@ -213,4 +213,4 @@ py::class_< VolField<Type>> declare_geofields(py::module &m, std::string &classN
 void  AddPyGeoFields(pybind11::module& m);
 
 
-#endif // py_geo_fields  defined 
+#endif // foam_geo_fields  defined 

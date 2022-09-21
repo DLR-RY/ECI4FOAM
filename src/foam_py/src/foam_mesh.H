@@ -28,34 +28,38 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef py_dict
-#define py_dict
+#ifndef foam_mesh
+#define foam_mesh
 
 // System includes
 #include <pybind11/pybind11.h>
+#include "fvMesh.H"
+#include "Time.H"
+#include "polyMesh.H"
 #include <pybind11/stl.h>
-#include <pybind11/numpy.h>
+#include "instantList.H"
+#include "timeSelector.H"
+#include <vector>
+#include "argList.H"
 
-#include "dictionary.H"
-#include "word.H"
-#include "tensor.H"
-#include "vector.H"
-#include "autoPtr.H"
-#include "IFstream.H"
-#include "Field.H"
 
 namespace Foam
 {
-    
-dictionary read_dictionary(const std::string& file_name);
 
-template<class Type>
-Type getFromDict(dictionary& dict, const std::string key);
+    Foam::instantList selectTimes
+    ( 
+        Time& runTime,
+        const std::vector<std::string>& args
+    );
 
+    Time* createTime(std::string rootPath = ".",std::string caseName= ".");
+
+    fvMesh* createMesh(const Time& time);
 
 }
 
-void  AddPyDict(pybind11::module& m);
+
+void  AddPyMesh(pybind11::module& m);
 
 
-#endif // py_dict  defined 
+#endif // foam_dict  defined 

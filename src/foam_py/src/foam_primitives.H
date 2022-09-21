@@ -100,4 +100,4 @@ bool is_notequal(const Type& t1, const Type& t2);
 void  AddFoamPrimitives(pybind11::module& m);
 
 
-#endif // py_dict  defined 
+#endif // foam_dict  defined 

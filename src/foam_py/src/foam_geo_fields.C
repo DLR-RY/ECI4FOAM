@@ -17,7 +17,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "py_geo_fields.H"
+#include "foam_geo_fields.H"
 
 
 

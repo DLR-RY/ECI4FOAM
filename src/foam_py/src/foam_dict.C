@@ -17,7 +17,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "py_dict.H"
+#include "foam_dict.H"
 
 
 class Dict {
