@@ -28,8 +28,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef py_mesh
-#define py_mesh
+#ifndef foam_mesh
+#define foam_mesh
 
 // System includes
 #include <pybind11/pybind11.h>

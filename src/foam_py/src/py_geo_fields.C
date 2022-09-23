@@ -26,8 +26,8 @@ namespace Foam
 
 // namespace py = pybind11;
 
-template<class Type>
-const Field<Type>& field(const VolField<Type>& vf,const fvMesh& mesh, const std::string& name)
+template<class Type, template<class> class PatchField, class GeoMesh>
+const Field<Type>& field(const GeometricField<Type, PatchField, GeoMesh>& vf,const fvMesh& mesh, const std::string& name)
 {
     if (name == "internalField")
     {
@@ -46,8 +46,8 @@ const Field<Type>& field(const VolField<Type>& vf,const fvMesh& mesh, const std:
     }
 }
 
-template<class Type>
-void field(VolField<Type>& vf,const fvMesh& mesh, const std::string& name,const Field<Type>& f)
+template<class Type, template<class> class PatchField, class GeoMesh>
+void field(GeometricField<Type, PatchField, GeoMesh>& vf,const fvMesh& mesh, const std::string& name,const Field<Type>& f)
 {
     if (name == "internalField")
     {
@@ -66,14 +66,14 @@ void field(VolField<Type>& vf,const fvMesh& mesh, const std::string& name,const 
     }
 }
 
-template<class Type>
-VolField<Type> read_volField
+template<class Type, template<class> class PatchField, class GeoMesh>
+GeometricField<Type, PatchField, GeoMesh> read_geoField
 (
     const std::string& name,
     const fvMesh& mesh
 )
 {
-    return GeometricField<Type, fvPatchField, volMesh>
+    return GeometricField<Type, PatchField, GeoMesh>
     (
         IOobject
         (
@@ -87,32 +87,84 @@ VolField<Type> read_volField
     );
 }
 
-template<class Type>
-py::class_< VolField<Type> > declare_fields(py::module &m, std::string className) {
-    auto geofieldClass = py::class_< Foam::VolField<Type>>(m, className.c_str())
-    .def(py::init([](const std::string& name,const Foam::fvMesh& mesh) {
-        return Foam::read_volField<Type>(name,mesh);
+template<class Type, template<class> class PatchField, class GeoMesh>
+py::class_< GeometricField<Type, PatchField, GeoMesh> > declare_geofields(py::module &m, std::string className) {
+    auto geofieldClass = py::class_< Foam::GeometricField<Type, PatchField, GeoMesh>>(m, className.c_str())
+    .def(py::init([]
+    (
+        const std::string& name,
+        const Foam::fvMesh& mesh
+    )
+    {
+        return Foam::read_geoField<Type, PatchField, GeoMesh>(name,mesh);
     }))
-    .def("internalField", [](const Foam::VolField<Type>& self, const std::string& name) {
-        // const Field<Type>& values = this->primitiveField();
+    .def("internalField", [](
+        const Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const std::string& name)
+    {
         return self.primitiveField();
     })
-    .def("__getitem__", [](const Foam::VolField<Type>& self, const std::string& name) {
+    .def("__getitem__", []
+    (
+        const Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const std::string& name
+    )
+    {
         return Foam::field(self,self.mesh(),name);
     })
-    .def("__setitem__", [](Foam::VolField<Type>& self, const std::string& name,const Foam::Field<Type>& f) {
+    .def("__setitem__", []
+    (
+        Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const std::string& name,
+        const Foam::Field<Type>& f
+    ) 
+    {
         Foam::field(self,self.mesh(),name,f);
     })
-    .def("__add__", [](Foam::VolField<Type>& self, const Foam::VolField<Type>& vf2) {return Foam::VolField<Type>(self + vf2);})
-
-    .def("__sub__", [](Foam::VolField<Type>& self, const Foam::VolField<Type>& vf2) {return Foam::VolField<Type>(self - vf2);})
-
-    .def("__mul__", [](Foam::VolField<Type>& self, const Foam::VolField<Foam::scalar>& vf2) {return Foam::VolField<Type>(self * vf2);})
-    .def("__truediv__", [](Foam::VolField<Type>& self, const Foam::VolField<Foam::scalar>& vf2) {return Foam::VolField<Type>(self / vf2);})
+    .def("__add__", []
+    (
+        Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const Foam::GeometricField<Type, PatchField, GeoMesh>& vf2
+    )
+    {
+        return Foam::GeometricField<Type, PatchField, GeoMesh>(self + vf2);
+    })
+    .def("__sub__", []
+    (
+        Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const Foam::GeometricField<Type, PatchField, GeoMesh>& vf2
+    )
+    {
+        return Foam::GeometricField<Type, PatchField, GeoMesh>(self - vf2);
+    })
+    .def("__mul__", []
+    (
+        Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const Foam::GeometricField<scalar, PatchField, GeoMesh>& vf2)
+    {
+        return Foam::GeometricField<Type, PatchField, GeoMesh>(self * vf2);
+    })
+    .def("__truediv__", []
+    (
+        Foam::GeometricField<Type, PatchField, GeoMesh>& self,
+        const Foam::GeometricField<scalar, PatchField, GeoMesh>& vf2
+    )
+    {
+        return Foam::GeometricField<Type, PatchField, GeoMesh>(self / vf2);
+    })
 
     ;
     return geofieldClass;
 }
+
+
+template<class Type, template<class> class PatchField, class GeoMesh>
+GeometricField<scalar, PatchField, GeoMesh>
+declare_mag (const GeometricField<Type, PatchField, GeoMesh>& geof)
+{
+    return GeometricField<scalar, PatchField, GeoMesh>(mag(geof));
+}
+
 
 }
 
@@ -121,24 +173,22 @@ void AddPyGeoFields(py::module& m)
 {
     namespace py = pybind11;
 
-    auto sf = Foam::declare_fields<Foam::scalar>(m, std::string("volScalarField"));
+    auto sf = Foam::declare_geofields<Foam::scalar,Foam::fvPatchField, Foam::volMesh>(m, std::string("volScalarField"));
+    auto vf = Foam::declare_geofields<Foam::vector,Foam::fvPatchField, Foam::volMesh>(m, std::string("volVectorField"));
+    auto tf = Foam::declare_geofields<Foam::tensor,Foam::fvPatchField, Foam::volMesh>(m, std::string("volTensorField"));
 
-    auto vf = Foam::declare_fields<Foam::vector>(m, std::string("volVectorField"));
+    auto ssf = Foam::declare_geofields<Foam::scalar,Foam::fvsPatchField, Foam::surfaceMesh>(m, std::string("surfaceScalarField"));
+    auto svf = Foam::declare_geofields<Foam::vector,Foam::fvsPatchField, Foam::surfaceMesh>(m, std::string("surfaceVectorField"));
+    auto stf = Foam::declare_geofields<Foam::tensor,Foam::fvsPatchField, Foam::surfaceMesh>(m, std::string("surfaceTensorField"));
 
-    auto tf = Foam::declare_fields<Foam::tensor>(m, std::string("volTensorField"));
+    // // functions
 
+    m.def("mag",Foam::declare_mag<Foam::scalar, Foam::fvPatchField, Foam::volMesh>);
+    m.def("mag",Foam::declare_mag<Foam::vector, Foam::fvPatchField, Foam::volMesh>);
+    m.def("mag",Foam::declare_mag<Foam::tensor, Foam::fvPatchField, Foam::volMesh>);
 
-    // functions
-    m.def("mag", [](Foam::VolField<Foam::scalar> vf)
-    {
-        return Foam::VolField<Foam::scalar>(Foam::mag(vf));
-    });
-    m.def("mag", [](Foam::VolField<Foam::vector> vf)
-    {
-        return Foam::VolField<Foam::scalar>(Foam::mag(vf));
-    });
-    m.def("mag", [](Foam::VolField<Foam::tensor> vf)
-    {
-        return Foam::VolField<Foam::scalar>(Foam::mag(vf));
-    });
+    m.def("mag",Foam::declare_mag<Foam::scalar, Foam::fvsPatchField, Foam::surfaceMesh>);
+    m.def("mag",Foam::declare_mag<Foam::vector, Foam::fvsPatchField, Foam::surfaceMesh>);
+    m.def("mag",Foam::declare_mag<Foam::tensor, Foam::fvsPatchField, Foam::surfaceMesh>);
+
 }
