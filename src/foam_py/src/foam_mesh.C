@@ -19,6 +19,7 @@ License
 
 #include "foam_mesh.H"
 #include "volFields.H"
+#include "surfaceFields.H"
 
 
 namespace Foam
@@ -90,7 +91,9 @@ void AddPyMesh(pybind11::module& m)
     py::class_<Foam::fvMesh>(m, "fvMesh")
         .def(py::init(&Foam::createMesh),py::return_value_policy::take_ownership)
         .def("C",&Foam::fvMesh::C,py::return_value_policy::reference)
-        // .def("Cf",&Foam::fvMesh::Cf,py::return_value_policy::reference)
+        .def("Cf",&Foam::fvMesh::Cf,py::return_value_policy::reference)
+        .def("Sf",&Foam::fvMesh::Sf,py::return_value_policy::reference)
+        .def("magSf",&Foam::fvMesh::magSf,py::return_value_policy::reference)
     ;
 
 }

@@ -51,6 +51,8 @@ py::array_t<scalar> toNumpy(const Field<Type>& values);
 template< >
 py::array_t<scalar> toNumpy<scalar>(const Field<scalar>& values);
 
+template<class Type>
+Type declare_sum(const Field<Type>& values);
 
 template<typename Type>
 void fromNumpy(Field<Type>& values,const py::array_t<scalar> np_arr);
@@ -60,6 +62,8 @@ void fromNumpy<scalar>(Field<scalar>& values,const py::array_t<scalar> np_arr);
 
 template<class Type>
 py::class_< Field<Type>> declare_fields(py::module &m, std::string &className);
+
+
 
 }
 

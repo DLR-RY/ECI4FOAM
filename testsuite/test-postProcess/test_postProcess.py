@@ -1,5 +1,6 @@
 import pytest
 import foam_py
+from foam_py.time_series import Force
 import os
 import numpy as np
 
@@ -16,21 +17,18 @@ def test_postProcess(change_test_dir):
     times = foam_py.selectTimes(time,["test_mesh"])
     mesh = foam_py.fvMesh(time)
 
+    f = Force(mesh,["lowerWall"])
+
 
     for idx, t in enumerate(times):
         time.setTime(t,idx)
         print(t)
         p_rgh = foam_py.volScalarField("p_rgh", mesh)
 
-        print(np.average(p_rgh["internalField"].to_numpy()))
-
-        print(foam_py.postProcess.compute_average("T",mesh))
-
         T = foam_py.volScalarField("T", mesh)
-
-        print(np.average(T["internalField"].to_numpy()))
 
         magU = foam_py.mag(foam_py.volVectorField("U", mesh))
 
-        print(np.average(magU["internalField"].to_numpy()))
+        force = f.compute()
+        print(force)
     

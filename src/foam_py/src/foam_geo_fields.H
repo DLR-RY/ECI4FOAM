@@ -35,7 +35,9 @@ SourceFiles
 #include <pybind11/pybind11.h>
 
 #include "foam_mesh.H"
+#include "GeometricField.H"
 #include "volFields.H"
+#include "surfaceFields.H"
 #include <vector>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
@@ -45,18 +47,6 @@ namespace py = pybind11;
 namespace Foam
 {
     
-template <class Type>
-using VolField = GeometricField<Type, fvPatchField, volMesh>;
-
-
-template<class Type>
-VolField<Type> read_volField
-(
-    const std::string& name,
-    const fvMesh& mesh
-);
-
-
 template<typename Type>
 pybind11::array_t<scalar> FieldToNumpy(const Field<Type>& values);
 
@@ -73,139 +63,42 @@ template<>
 void NumpyToField<scalar>(Field<scalar>& values,const pybind11::array_t<scalar> np_arr);
 
 
-template<class Type>
-const Field<Type>& field(const VolField<Type>& vf,const fvMesh& mesh, const std::string& name);
+template<class Type, template<class> class PatchField, class GeoMesh>
+const Field<Type>& field
+(
+    const GeometricField<Type, PatchField, GeoMesh>& vf,
+    const fvMesh& mesh, 
+    const std::string& name
+);
 
 
-template<class Type>
-void field(VolField<Type>& vf,const fvMesh& mesh, const std::string& name,const Field<Type>& f);
-
-template<class Type>
-py::class_< VolField<Type>> declare_geofields(py::module &m, std::string &className);
-
-// template<class Type>
-// class VolField
-// :
-//     public GeometricField<Type, fvPatchField, volMesh>
-// {
-    
-
-//     public:
-//     VolField<Type>
-//     (
-//         const tmp< GeometricField< Type, fvPatchField, volMesh > > &tgf
-//     )
-//     :
-//         GeometricField<Type, fvPatchField, volMesh>
-//     (
-//         tgf
-//     )
-//     {
-
-//     }
-
-//     VolField<Type>
-//     (
-//         const GeometricField<Type, fvPatchField, volMesh>& vlf
-//     )
-//     :
-//         GeometricField<Type, fvPatchField, volMesh>
-//     (
-//         vlf
-//     )
-//     {
-        
-//     }
-//     VolField<Type>
-//     (
-//         const std::string& name,
-//         const fvMesh& mesh
-//     )
-//     :
-//         GeometricField<Type, fvPatchField, volMesh>
-//     (
-//         IOobject
-//         (
-//             name,
-//             mesh.time().timeName(),
-//             mesh,
-//             IOobject::MUST_READ,
-//             IOobject::AUTO_WRITE
-//         ),
-//         mesh
-//     )
-//     {
-//         // Info << "internalField " << this->internalField() << endl;
-//     }
-
-//     VolField<Type>
-//     (
-//         const std::string& name,
-//         const FvMesh& FvMesh
-//     )
-//     :
-//         GeometricField<Type, fvPatchField, volMesh>
-//     (
-//         IOobject
-//         (
-//             name,
-//             FvMesh.time().timeName(),
-//             FvMesh.mesh(),
-//             IOobject::MUST_READ,
-//             IOobject::AUTO_WRITE
-//         ),
-//         FvMesh.mesh()
-//     )
-//     {
-//         // Info << "internalField " << this->internalField() << endl;
-//     }
+template<class Type, template<class> class PatchField, class GeoMesh>
+void field
+(
+    GeometricField<Type, PatchField, GeoMesh>& vf,
+    const fvMesh& mesh,
+    const std::string& name,const Field<Type>& f
+);
 
 
-//     // template<class Type>
-//     pybind11::array_t<scalar> internalField() const
-//     {
-//         const Field<Type>& values = this->primitiveField();
-//         return FieldToNumpy<Type>(values);
-//     }
+template<class Type, template<class> class PatchField, class GeoMesh>
+GeometricField<Type, PatchField, GeoMesh> read_geoField
+(
+    const std::string& name,
+    const fvMesh& mesh
+);
 
 
-//     void setInternalField(const pybind11::array_t<scalar> np_arr)
-//     {
-//         auto& values = this->primitiveFieldRef();
-//         NumpyToField(values,np_arr);
-//     }
+template<class Type, template<class> class PatchField, class GeoMesh>
+py::class_< GeometricField<Type, PatchField, GeoMesh>>
+declare_geofields(py::module &m, std::string &className);
 
-//     pybind11::array_t<scalar> bField(std::string patchName) const
-//     {
-//         label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
-//         if (patchId == -1)
-//         {
-//             FatalErrorInFunction
-//                 << "patch not found " << nl
-//                 << exit(FatalError);
-//         }
-//         const auto& bField = this->boundaryField()[patchId];
-//         return FieldToNumpy<Type>(bField); 
-//     }
+template<class Type, template<class> class PatchField, class GeoMesh>
+GeometricField<scalar, PatchField, GeoMesh>
+declare_mag(const GeometricField<Type, PatchField, GeoMesh>& geof);
 
-//     void setBField(std::string patchName,const pybind11::array_t<scalar> np_arr)
-//     {
-//         label patchId = this->mesh().boundaryMesh().findPatchID(patchName);
-//         if (patchId == -1)
-//         {
-//             FatalErrorInFunction
-//                 << "patch not found " << nl
-//                 << exit(FatalError);
-//         }
-//         auto& bField = this->boundaryFieldRef()[patchId];
-//         NumpyToField(bField,np_arr);
-//     }
-// };
 
 }
-
-// Foam::FieldToNumpy<Foam::scalar>(const Foam::Field<Foam::scalar>& values);
-// Foam::NumpyToField<Foam::scalar>(Foam::Field<double>& values,const pybind11::array_t<Foam::scalar> np_arr);
 
 
 

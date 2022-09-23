@@ -126,6 +126,12 @@ void fromNumpy<scalar>(Field<scalar>& values,const py::array_t<scalar> np_arr)
     }
 }
 
+template<class Type>
+Type declare_sum(const Field<Type>& values)
+{
+    return gSum(values);
+}
+
 }
 
 template<class Type>
@@ -146,6 +152,10 @@ py::class_< Foam::Field<Type>> declare_fields(py::module &m, std::string classNa
         return self.size();
     })
     .def("__getitem__", [](const Foam::Field<Type>& self, const Foam::label idx) {
+        if (idx >= self.size())
+        {
+            throw py::index_error();
+        }
         return self[idx];
     })
     .def("__setitem__", [](Foam::Field<Type>& self, const Foam::label idx,const Type& s) {
@@ -190,6 +200,10 @@ void AddFoamFields(py::module& m)
             return self.size();
         })
         .def("__getitem__", [](const Foam::List<Foam::word>& self, const Foam::label idx) {
+            if (idx >= self.size())
+            {
+                throw py::index_error();
+            }
             return std::string(self[idx]);
         })
         .def("__setitem__", [](Foam::List<Foam::word>& self, const Foam::label idx,const std::string& s) {
@@ -222,4 +236,9 @@ void AddFoamFields(py::module& m)
         tf
         .def("__mul__", [](Foam::Field<Foam::tensor>& self, const Foam::Field<Foam::scalar>& sf) {return Foam::Field<Foam::tensor>(self * sf);})
         .def("__truediv__", [](Foam::Field<Foam::tensor>& self, const Foam::Field<Foam::scalar>& sf) {return Foam::Field<Foam::tensor>(self * sf);});
+
+
+    m.def("sum",Foam::declare_sum<Foam::scalar>);
+    m.def("sum",Foam::declare_sum<Foam::vector>);
+    m.def("sum",Foam::declare_sum<Foam::tensor>);
 }

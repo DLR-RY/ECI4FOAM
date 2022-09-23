@@ -11,3 +11,4 @@ sys.path.append(foam_pyPaths.foam_py_libs)
 
 from foam_py_core import *
 from foam_py import postProcess
+from foam_py import time_series

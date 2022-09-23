@@ -1,8 +1,8 @@
-src/py_dict.C
-src/py_mesh.C
+src/foam_dict.C
+src/foam_mesh.C
 src/foam_primitives.C
 src/foam_fields.C
-src/py_geo_fields.C
+src/foam_geo_fields.C
 src/foam_py.C
 
 LIB = foam_py_core
