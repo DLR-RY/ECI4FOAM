@@ -76,6 +76,12 @@ void AddPyMesh(pybind11::module& m)
     m.def("selectTimes",&Foam::selectTimes);
 
     py::class_<Foam::Time>(m, "Time")
+        .def(py::init([](const Foam::Time& self)
+        {
+            Foam::Time& time = const_cast<Foam::Time&>(self);
+            return &time;
+        })
+        ,py::return_value_policy::reference_internal)
         .def(py::init(&Foam::createTime),py::return_value_policy::take_ownership)
         .def("setTime", []
         (
@@ -86,10 +92,18 @@ void AddPyMesh(pybind11::module& m)
         {
             self.setTime(inst,newIndex);
         })
+        .def("value",&Foam::Time::timeOutputValue)
     ;
 
     py::class_<Foam::fvMesh>(m, "fvMesh")
+        .def(py::init([](const Foam::fvMesh& self)
+        {
+            Foam::fvMesh& mesh = const_cast<Foam::fvMesh&>(self);
+            return &mesh;
+        })
+        ,py::return_value_policy::reference_internal)
         .def(py::init(&Foam::createMesh),py::return_value_policy::take_ownership)
+        .def("time",&Foam::fvMesh::time,py::return_value_policy::reference)
         .def("C",&Foam::fvMesh::C,py::return_value_policy::reference)
         .def("Cf",&Foam::fvMesh::Cf,py::return_value_policy::reference)
         .def("Sf",&Foam::fvMesh::Sf,py::return_value_policy::reference)

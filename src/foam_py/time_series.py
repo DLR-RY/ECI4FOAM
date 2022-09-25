@@ -1,4 +1,4 @@
-from foam_py import volScalarField, fvMesh, Vector
+from foam_py import volScalarField, fvMesh, vector
 import foam_py
 import numpy as np
 from typing import Protocol, List, Any, Callable
@@ -37,12 +37,14 @@ class csvTimeSeries(TimeSeriesWriter):
         self.file_name = Path(self.dir_name, self.name, f"{self.name}.csv")
 
     def create_file(self):
+        self.file_name.parent.mkdir(parents=True, exist_ok=True)
         with open(self.file_name, "w", encoding="utf8") as f:
             f.write(",".join(self.header))
             f.write(os.linesep)
 
-    def append_data(self, t: float, data: List[Any]):
-        with open(self.file_name, "w", encoding="utf8") as f:
+    def write_data(self, t: float, data: List[Any]):
+        with open(self.file_name, "a", encoding="utf8") as f:
+            f.write(f"{t},")
             f.write(",".join(data))
             f.write(os.linesep)
 
@@ -57,9 +59,12 @@ class Force:
         self.p_name = p_name
         self.bc_names = bc_names
 
-    def calcForces(self) -> Vector:
-        p = volScalarField(self.p_name, self.mesh)
-        force = Vector(0, 0, 0)
+    def header(self) -> List[str]:
+        return ["force_x", "force_y", "force_z"]
+
+    def calcForces(self) -> vector:
+        p = volScalarField.from_registry(self.mesh,self.p_name)
+        force = vector(0, 0, 0)
         for bc in self.bc_names:
             force += foam_py.sum(self.mesh.Sf()[bc] * p[bc])
 

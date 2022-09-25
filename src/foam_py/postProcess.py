@@ -43,12 +43,12 @@ class csvTimeSeries(TimeSeriesWriter):
 
     def create_file(self):
         with open(self.file_name, "w", encoding="utf8") as f:
-            f.write(",".join(header))
+            f.write(",".join(self.header))
             f.write(os.linesep)
 
     def append_data(self, t: float, data: List[Any]):
         with open(self.file_name, "w", encoding="utf8") as f:
-            f.write(",".join(header))
+            f.write(",".join(data))
             f.write(os.linesep)
 
 

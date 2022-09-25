@@ -98,6 +98,12 @@ py::class_< GeometricField<Type, PatchField, GeoMesh> > declare_geofields(py::mo
     {
         return Foam::read_geoField<Type, PatchField, GeoMesh>(name,mesh);
     }))
+    .def_static("from_registry",[](const fvMesh& mesh,std::string obj_name)
+    {
+        const Foam::GeometricField<Type, PatchField, GeoMesh>* obj =
+            mesh.findObject<Foam::GeometricField<Type, PatchField, GeoMesh>>(obj_name);
+        return obj;
+    },py::return_value_policy::reference)
     .def("internalField", [](
         const Foam::GeometricField<Type, PatchField, GeoMesh>& self,
         const std::string& name)
@@ -173,9 +179,10 @@ void AddPyGeoFields(py::module& m)
 {
     namespace py = pybind11;
 
-    auto sf = Foam::declare_geofields<Foam::scalar,Foam::fvPatchField, Foam::volMesh>(m, std::string("volScalarField"));
-    auto vf = Foam::declare_geofields<Foam::vector,Foam::fvPatchField, Foam::volMesh>(m, std::string("volVectorField"));
-    auto tf = Foam::declare_geofields<Foam::tensor,Foam::fvPatchField, Foam::volMesh>(m, std::string("volTensorField"));
+    auto vsf = Foam::declare_geofields<Foam::scalar,Foam::fvPatchField, Foam::volMesh>(m, std::string("volScalarField"));
+    auto vvf = Foam::declare_geofields<Foam::vector,Foam::fvPatchField, Foam::volMesh>(m, std::string("volVectorField"));
+    auto vtf = Foam::declare_geofields<Foam::tensor,Foam::fvPatchField, Foam::volMesh>(m, std::string("volTensorField"));
+    auto vstf = Foam::declare_geofields<Foam::symmTensor,Foam::fvPatchField, Foam::volMesh>(m, std::string("volSymmTensorField"));
 
     auto ssf = Foam::declare_geofields<Foam::scalar,Foam::fvsPatchField, Foam::surfaceMesh>(m, std::string("surfaceScalarField"));
     auto svf = Foam::declare_geofields<Foam::vector,Foam::fvsPatchField, Foam::surfaceMesh>(m, std::string("surfaceVectorField"));
@@ -186,6 +193,7 @@ void AddPyGeoFields(py::module& m)
     m.def("mag",Foam::declare_mag<Foam::scalar, Foam::fvPatchField, Foam::volMesh>);
     m.def("mag",Foam::declare_mag<Foam::vector, Foam::fvPatchField, Foam::volMesh>);
     m.def("mag",Foam::declare_mag<Foam::tensor, Foam::fvPatchField, Foam::volMesh>);
+    m.def("mag",Foam::declare_mag<Foam::symmTensor, Foam::fvPatchField, Foam::volMesh>);
 
     m.def("mag",Foam::declare_mag<Foam::scalar, Foam::fvsPatchField, Foam::surfaceMesh>);
     m.def("mag",Foam::declare_mag<Foam::vector, Foam::fvsPatchField, Foam::surfaceMesh>);

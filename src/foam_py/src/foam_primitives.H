@@ -38,6 +38,7 @@ SourceFiles
 #include "scalar.H"
 #include "vector.H"
 #include "tensor.H"
+#include "symmTensor.H"
 
 namespace py = pybind11;
 
@@ -71,9 +72,15 @@ Type multiply_scalar(const Type& t1, const scalar& s) {
 }
 
 template<class Type>
-scalar inner_product(const Type& t1, const Type& t2) {
+typename innerProduct<Type, Type>::type inner_product(const Type& t1, const Type& t2) {
     return t1 & t2;
 }
+
+template<class Type, class Type2>
+typename innerProduct<Type, Type2>::type inner_product(const Type& t1, const Type2& t2) {
+    return t1 & t2;
+}
+
 
 template<class Type>
 bool is_equal(const Type& t1, const Type& t2) {

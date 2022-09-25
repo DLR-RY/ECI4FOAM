@@ -31,7 +31,7 @@ def test_geoFieldField(change_test_dir):
 
     U = foam_py.volVectorField("U", mesh)
     assert (sum(U["internalField"].to_numpy()) == [0, 0, 0]).all()
-    U["internalField"] += foam_py.Vector(1, 1, 1)
+    U["internalField"] += foam_py.vector(1, 1, 1)
     nElements = len(p_rgh["internalField"])
     assert (
         sum(U["internalField"].to_numpy()) == [nElements, nElements, nElements]

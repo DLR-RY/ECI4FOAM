@@ -1,5 +1,5 @@
 import pytest
-from foam_py import dictionary, Vector, Tensor
+from foam_py import dictionary, vector, tensor
 import os
 import numpy as np
 
@@ -20,8 +20,8 @@ def test_ofdict(change_test_dir):
     # primitives
     assert d.get_word("word") == "word"
     assert d.get_scalar("scalar") == 1.1
-    assert d.get_vector("vector") == Vector(1.1,1.1,1.1)
-    assert d.get_tensor("tensor") == Tensor(1.1,1.1,1.1,1.1,1.1,1.1,1.1,1.1,1.1)
+    assert d.get_vector("vector") == vector(1.1,1.1,1.1)
+    assert d.get_tensor("tensor") == tensor(1.1,1.1,1.1,1.1,1.1,1.1,1.1,1.1,1.1)
 
     # fields
     assert  d.get_wordList("wordList").list() == ["word1", "word2"]

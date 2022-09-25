@@ -30,9 +30,14 @@ template<class Type>
 py::class_<Type> declare_vectorspace(py::module &m, std::string className) {
     auto primitiveType = py::class_<Type>(m, className.c_str())
         .def(py::init<Type>())
-        // .def("__eq__",[](Type& self, const std::array<Foam::scalar, 3>& v){
-        //     return self[0] == v[0] && self[1] == v[1] && self[2] == v[2];
-        // })
+        .def(py::init([](const std::array<Foam::scalar, pTraits<Type>::nComponents>& v){
+            Type val = Zero;
+            for(int i = 0;i<pTraits<Type>::nComponents;i++ )
+            {
+                val[i] = v[i];
+            }
+            return val;
+        }))
         .def("__getitem__", [](const Type& self, const Foam::label idx) {
             if (idx >= pTraits<Type>::nComponents || idx < 0)
             {
@@ -62,6 +67,16 @@ py::class_<Type> declare_vectorspace(py::module &m, std::string className) {
         .def("__mul__", &Foam::multiply_scalar<Type>)
         .def("__and__", &Foam::inner_product<Type>)
         .def("__eq__", &Foam::is_equal<Type>)
+        .def("__eq__",[](const Type& self, const std::array<Foam::scalar, pTraits<Type>::nComponents>& v){
+            for(int i = 0;i<pTraits<Type>::nComponents;i++ )
+            {
+                if (self[i] != v[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        })
         .def("__ne__", &Foam::is_notequal<Type>)
         ;
     return primitiveType;
@@ -91,57 +106,25 @@ void AddFoamPrimitives(pybind11::module& m)
         ;
 
 
-    py::class_<Foam::vector>(m, "Vector")
-        .def(py::init<const Foam::vector>())
-        .def(py::init<Foam::scalar,Foam::scalar,Foam::scalar>())
-        .def("__eq__",[](const Foam::vector& self, const std::array<Foam::scalar, 3>& v){
-            return self[0] == v[0] && self[1] == v[1] && self[2] == v[2];
-        })
-        .def("__getitem__", [](const Foam::vector& self, const Foam::label idx) {
-            return self[idx];
-        })
-        .def("__setitem__", [](Foam::vector& self, const Foam::label idx,const Foam::scalar s) {
-            self[idx] = s;
-        })
-        .def("__len__", [](const Foam::vector& self) -> int {return 3;})
-        .def("__add__", &Foam::add<Foam::vector>)
-        .def("__sub__", &Foam::subtract<Foam::vector>)
-        .def("__mul__", &Foam::multiply_scalar<Foam::vector>)
-        .def("__and__", &Foam::inner_product<Foam::vector>)
-        .def("__eq__", &Foam::is_equal<Foam::vector>)
-        .def("__ne__", &Foam::is_notequal<Foam::vector>)
-        ;
+    auto vector = Foam::declare_vectorspace<Foam::vector>(m, std::string("vector"));
+        vector
+            .def(py::init<Foam::scalar,Foam::scalar,Foam::scalar>())
+            .def("__and__",&Foam::inner_product<Foam::vector,Foam::tensor>)
+            .def("__and__",&Foam::inner_product<Foam::vector,Foam::symmTensor>);
 
+    auto tensor = Foam::declare_vectorspace<Foam::tensor>(m, std::string("tensor"));
+        tensor
+            .def(py::init<Foam::scalar,Foam::scalar,Foam::scalar,
+                          Foam::scalar,Foam::scalar,Foam::scalar,
+                          Foam::scalar,Foam::scalar,Foam::scalar>())
+            .def("__and__",&Foam::inner_product<Foam::tensor,Foam::vector>);
 
-    py::class_<Foam::tensor>(m, "Tensor")
-        .def(py::init<const Foam::tensor>())
-        .def(py::init<  Foam::scalar,Foam::scalar,Foam::scalar,
-                        Foam::scalar,Foam::scalar,Foam::scalar,
-                        Foam::scalar,Foam::scalar,Foam::scalar>())
-        .def("__eq__",[](const Foam::tensor& self, const std::array<Foam::scalar, 9>& v){
-            for(int i = 0;i<9;i++ )
-            {
-                if (self[i] != v[i])
-                {
-                    return false;
-                }
-            }
+    auto symmTensor = Foam::declare_vectorspace<Foam::symmTensor>(m, std::string("symmTensor"));
+        symmTensor
+            .def(py::init<Foam::scalar,Foam::scalar,Foam::scalar,
+                          Foam::scalar,Foam::scalar,Foam::scalar>())
+            .def("__and__",&Foam::inner_product<Foam::symmTensor,Foam::vector>);
 
-            return true;
-        })
-        .def("__getitem__", [](const Foam::tensor& self, const Foam::label idx) {
-            return self[idx];
-        })
-        .def("__setitem__", [](Foam::tensor& self, const Foam::label idx,const Foam::scalar s) {
-            self[idx] = s;
-        })
-        .def("__len__", [](const Foam::tensor& self) -> int {return 9;})
-        .def("__add__", &Foam::add<Foam::tensor>)
-        .def("__sub__", &Foam::subtract<Foam::tensor>)
-        .def("__mul__", &Foam::multiply_scalar<Foam::tensor>)
-        .def("__eq__", &Foam::is_equal<Foam::tensor>)
-        .def("__ne__", &Foam::is_notequal<Foam::tensor>)
-        ;
 
     // functions
     m.def("mag", [](Foam::scalar t){return Foam::mag(t);});

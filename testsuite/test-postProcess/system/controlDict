@@ -35,7 +35,7 @@ purgeWrite      0;
 
 writeFormat     ascii;
 
-writePrecision  6;
+writePrecision  16;
 
 writeCompression off;
 
@@ -54,6 +54,22 @@ maxDeltaT       1;
 
 functions
 {
+
+    pyPostProcessing
+    {
+        // Where to load it from
+        libs            ("libpyPostProcessing.so");
+
+        type            pyPostProcessing;
+
+        // Write at same frequency as fields
+        writeControl    timeStep;
+        writeInterval   1;
+
+        pyFileName postProcess;
+        pyClassName postProcess;
+    }
+
     probes
     {
         // Where to load it from
