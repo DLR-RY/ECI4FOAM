@@ -99,7 +99,7 @@ bool Foam::externalIOObject::extForces::execute()
     }
     
     functionObjects::forces f("forces", time_, forceDict);
-    f.calcForcesMoment();
+    f.calcForcesMoments();
 
     vector& F = data.getObj<vector>(forceName_,commDataLayer::causality::out);
     F = f.forceEff();
