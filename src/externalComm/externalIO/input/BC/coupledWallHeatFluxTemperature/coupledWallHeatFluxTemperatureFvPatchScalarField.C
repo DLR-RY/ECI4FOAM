@@ -51,11 +51,7 @@ coupledWallHeatFluxTemperatureFvPatchScalarField
     mixedFvPatchScalarField(p, iF),
     temperatureCoupledBase
     (
-        patch(),
-        "undefined",
-        "undefined",
-        "undefined-K",
-        "undefined-alpha"
+        patch()
     ),
     mode_(fixedPower),
     Q_(0),
