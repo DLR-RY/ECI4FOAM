@@ -41,6 +41,14 @@ entries:
       url: /doc_installation.html
       output: web, pdf
 
+  - title: Software Design
+    output: web, pdf
+    folderitems:
+
+    - title: Software Design
+      url: /doc_design.html
+      output: web, pdf
+
   - title: Usage
     output: web, pdf
     folderitems:
